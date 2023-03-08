@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.ColorProgramming
+namespace ColorProgramming
 {
-    public class BoardView : MonoBehaviour
+    public class StageController : MonoBehaviour
     {
 
         // Use this for initialization

@@ -1,5 +1,3 @@
-using UnityEditor.Build.Player;
-
 namespace ColorProgramming
 {
     public class ConditionalNode : Node
@@ -20,7 +18,7 @@ namespace ColorProgramming
 
         public Pattern EvalNode(Player player)
         {
-            return player.CurrentPattern == CheckedPattern && IsNot ? TruePattern : FalsePattern;
+            return player.CurrentPattern == CheckedPattern && !IsNot ? TruePattern : FalsePattern;
         }
 
 
