@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using UnityEditor.Experimental.GraphView;
 
-namespace ColorProgramming
+namespace ColorProgramming.Core
 {
     public class Board
     {

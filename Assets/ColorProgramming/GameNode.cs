@@ -1,4 +1,5 @@
 using ColorProgramming;
+using ColorProgramming.Core;
 using UnityEngine;
 
 namespace ColorProgramming

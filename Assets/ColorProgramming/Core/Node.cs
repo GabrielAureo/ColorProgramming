@@ -1,6 +1,6 @@
 using System;
 
-namespace ColorProgramming
+namespace ColorProgramming.Core
 {
     public abstract class Node
     {

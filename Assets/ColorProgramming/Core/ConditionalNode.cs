@@ -1,4 +1,4 @@
-namespace ColorProgramming
+namespace ColorProgramming.Core
 {
     public class ConditionalNode : Node
     {
