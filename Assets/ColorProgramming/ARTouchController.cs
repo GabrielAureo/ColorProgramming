@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Events;
 using System;
+using Assets.ColorProgramming;
+using UnityEngine.EventSystems;
+using static UnityEngine.GraphicsBuffer;
 
-public class ARTouchController : MonoBehaviour, ITouchController{
+public class ARTouchController : MonoBehaviour{
     public float timer;
     public float holdThreshold = 0.2f;
 
     [HideInInspector] public Ray ray;
-    //To be used by the movable controller
-    [HideInInspector] public event Action<ARTouchData> OnTouch;
-    [HideInInspector] public event Action<ARTouchData> OnHold;
-    [HideInInspector] public event Action<ARTouchData> OnRelease;
-
 
     public static ARTouchData touchData;
+
+    public UnityEvent<ARTouchData> OnTouch;
+    public UnityEvent<ARTouchData> OnHold;
+    public UnityEvent<ARTouchData> OnRelease;
 
     void Awake(){
         touchData = new ARTouchData();
@@ -56,10 +58,11 @@ public class ARTouchController : MonoBehaviour, ITouchController{
         }
     }
 
-    private void InputStateMachine(){
+    private void InputStateMachine()
+    {
         RaycastHit[] hits;
         if(touchData.currentStatus == ARTouchData.Status.NO_TOUCH){
-            
+
             hits = Physics.RaycastAll(ray, Mathf.Infinity, 1<<LayerMask.NameToLayer("Default"));
             if(hits.Length > 0){
                 IARInteractable selectedInteractable = null;
@@ -73,8 +76,6 @@ public class ARTouchController : MonoBehaviour, ITouchController{
                
                 touchData.selectedInteractable = selectedInteractable;
                 OnTouch.Invoke(touchData);
-                
-
             }
             ChangeStatus(ARTouchData.Status.WAITING);
         }
@@ -101,27 +102,30 @@ public class ARTouchController : MonoBehaviour, ITouchController{
         }
     }
 
-    private Ray CameraRay(){
-        Vector2 inputPosition = Input.mousePosition;
-        #if UNITY_ANDROID && !UNITY_EDITOR
-            inputPosition = Input.touches[0].position;
-        #endif
-
-        
-
-        var wrldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 1.35f));
-        //Debug.Log(wrldPos);
-        transform.position = new Vector3(wrldPos.x, wrldPos.y, wrldPos.z);
-        Ray ray = Camera.main.ScreenPointToRay(inputPosition);
-        return ray;
-        
-    }
-
     private void Release(){
         timer = 0.0f;
-        OnRelease.Invoke(touchData);
+        
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(touchData.ray, Mathf.Infinity, 1 << LayerMask.NameToLayer("Default"));
 
-        if(touchData.currentStatus == ARTouchData.Status.WAITING){
+        if (hits.Length > 0)
+        {
+            IARInteractable selectedInteractable = null;
+            foreach (var hit in hits)
+            {
+                selectedInteractable = hit.transform.GetComponent<IARInteractable>();
+                if (selectedInteractable != null)
+                {
+                    touchData.hit = hit;
+                    break;
+                }
+            }
+        }
+
+            OnRelease.Invoke(touchData);
+
+
+        if (touchData.currentStatus == ARTouchData.Status.WAITING){
             try{
                 touchData.selectedInteractable?.OnTap();
             }catch(System.Exception e){
@@ -145,4 +149,26 @@ public class ARTouchController : MonoBehaviour, ITouchController{
         touchData.lastStatus = touchData.currentStatus;
         touchData.currentStatus = newStatus;
     }
+
+    private Ray CameraRay()
+    {
+        Vector2 inputPosition = Input.mousePosition;
+#if UNITY_ANDROID && !UNITY_EDITOR
+            inputPosition = Input.touches[0].position;
+#endif
+
+        var wrldPos = Camera.main.ScreenToWorldPoint(new Vector3(inputPosition.x, inputPosition.y, 1.35f));
+
+        transform.position = new Vector3(wrldPos.x, wrldPos.y, wrldPos.z);
+        Ray ray = Camera.main.ScreenPointToRay(inputPosition);
+        return ray;
+
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(touchData.ray.origin, touchData.ray.origin + touchData.ray.direction * 1000f);
+        Gizmos.DrawWireSphere(touchData.hit.point, 5f);
+    }
+
 }

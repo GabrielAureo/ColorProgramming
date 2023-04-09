@@ -16,12 +16,12 @@ public class MovableController : MonoBehaviour{
     }
 
     
-    public void SetupController(ITouchController touchController){
+    public void SetupController(ARTouchController touchController){
         isHolding = false;
         isTargeting = false;
         //touchController.onTouch.AddListener(Touch);
-        touchController.OnHold += Grab;
-        touchController.OnRelease += Release;
+        touchController.OnHold.AddListener(Grab);
+        touchController.OnRelease.AddListener(Release);
         previewer = new GameObject("Previewer", typeof(MeshFilter), typeof(MeshRenderer)).transform;
     }   
 
@@ -29,29 +29,17 @@ public class MovableController : MonoBehaviour{
         if(!(touchData.selectedInteractable is BaseSocket)) return;
         var socket = touchData.selectedInteractable as BaseSocket;
         isHolding = true;
-        CmdGrab(socket);
-        
+
+        var takenMovable = socket.TryTake(touchData);
+        if (takenMovable)
+        {
+            currentMovable = takenMovable;
+            ConnectToHinge(takenMovable);
+        }
+
     }
 
-    private void CmdGrab(BaseSocket socket){
-        var takenMovable = socket.TryTake();        
-        if(takenMovable){
-            //lastSocketObj = socketObj;                        
-            //RpcEmptySocket(socketObj);
-            TargetGrab(socket);
-        } 
-        
-    }
-
-    private void TargetGrab(BaseSocket socket)
-	{
-        var movable = socket.GetMovable();
-        currentMovable = movable;
-
-        ConnectToHinge(movable);
-    }
-
-    void Update()
+    private void Update()
     {
         CheckTarget(ARTouchController.touchData);
     }
@@ -77,9 +65,6 @@ public class MovableController : MonoBehaviour{
             }
 
         }
-
-   
-
     
     }
 
@@ -115,10 +100,19 @@ public class MovableController : MonoBehaviour{
                 if(target != null) break;
             }
         }
-        CmdPlace(target, lastSocket);
+
+        if (target == null) return;
+
+        var movable = lastSocket.GetMovable(touchData);
+        var didPlace =  target.TryPlaceObject(touchData, movable);
+
+        if (didPlace)
+        {
+            hinge.connectedBody = null;
+            movable.rigidBody.isKinematic = true;
+        }
         isHolding = false;
 
-        //}
     }
 
     public void ConnectToHinge(Movable movable){
@@ -128,14 +122,6 @@ public class MovableController : MonoBehaviour{
         hinge.connectedBody = movable.rigidBody;
     }
 
-    void CmdPlace(BaseSocket targetSocket, BaseSocket lastSocket){
-        var canPlace = false;
-        
-        if(targetSocket != null && targetSocket != lastSocket){
-            canPlace = targetSocket.TryPlaceObject(lastSocket.GetMovable());
-        }
-        lastSocket = null;        
-    }
 
 
 

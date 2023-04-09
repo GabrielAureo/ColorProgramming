@@ -3,27 +3,41 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-public abstract class BaseSocket : MonoBehaviour
+public abstract class BaseSocket : MonoBehaviour, IARInteractable
 {
-    public Movable TryTake()
+    public Movable TryTake(ARTouchData touchData)
     {
         var taken = TakeOperation();        
-        return taken ? GetMovable() : null;
+        return taken ? GetMovable(touchData) : null;
     }
 
     protected abstract bool TakeOperation();
-    public abstract Movable GetMovable();
-    public bool TryPlaceObject(Movable movable)
+    public abstract Movable GetMovable(ARTouchData touchData);
+    public bool TryPlaceObject(ARTouchData touchData, Movable movable)
     {
         var canPlace = ShouldPlace(movable); 
 
         if(canPlace)       
-            OnPlace(movable);
+            OnPlace(touchData, movable);
         return canPlace;
     }
 
-    protected abstract bool ShouldPlace(Movable movable);
+    protected abstract bool ShouldPlace( Movable movable);
 
-    protected abstract void OnPlace(Movable movable);
-    
+    protected abstract void OnPlace(ARTouchData touchData, Movable movable);
+
+    public void OnTap()
+    {
+       
+    }
+
+    public void OnHold()
+    {
+        
+    }
+
+    public void OnRelease()
+    {
+        
+    }
 }
