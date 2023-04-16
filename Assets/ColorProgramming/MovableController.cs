@@ -39,6 +39,12 @@ public class MovableController : MonoBehaviour{
 
     }
 
+    public void Grab(Movable movable)
+    {
+        currentMovable = movable;
+        ConnectToHinge(currentMovable);
+    }
+
     private void Update()
     {
         CheckTarget(ARTouchController.touchData);

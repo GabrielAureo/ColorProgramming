@@ -24,6 +24,23 @@ public class ARTouchController : MonoBehaviour{
         touchData.currentStatus = ARTouchData.Status.NO_TOUCH;
     }
 
+    private bool IsOverUI()
+    {
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+    var position = Input.GetTouch(0).position;
+#else
+        var position = Input.mousePosition;
+#endif
+        var eventDataCurrentPosition = new PointerEventData(EventSystem.current)
+        {
+            position = position
+        };
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        return results.Count > 0;
+    }
+
 
     void Update(){
         HandleInput();
@@ -32,6 +49,9 @@ public class ARTouchController : MonoBehaviour{
 
     public void HandleInput()
     {
+
+        if (IsOverUI()) return;
+       
         #if UNITY_ANDROID && !UNITY_EDITOR
             
             if(Input.touchCount > 0){
@@ -167,6 +187,7 @@ public class ARTouchController : MonoBehaviour{
 
     void OnDrawGizmos()
     {
+        if (touchData == null) return;
         Gizmos.DrawLine(touchData.ray.origin, touchData.ray.origin + touchData.ray.direction * 1000f);
         Gizmos.DrawWireSphere(touchData.hit.point, 5f);
     }
