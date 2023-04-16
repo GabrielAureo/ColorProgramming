@@ -6,6 +6,7 @@ using System;
 using Assets.ColorProgramming;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
+using System.Linq;
 
 public class ARTouchController : MonoBehaviour{
     public float timer;
@@ -18,6 +19,8 @@ public class ARTouchController : MonoBehaviour{
     public UnityEvent<ARTouchData> OnTouch;
     public UnityEvent<ARTouchData> OnHold;
     public UnityEvent<ARTouchData> OnRelease;
+
+    private IEnumerable<IARInteractable> hitInteractables;
 
     void Awake(){
         touchData = new ARTouchData();
@@ -85,16 +88,8 @@ public class ARTouchController : MonoBehaviour{
 
             hits = Physics.RaycastAll(ray, Mathf.Infinity, 1<<LayerMask.NameToLayer("Default"));
             if(hits.Length > 0){
-                IARInteractable selectedInteractable = null;
-                foreach(var hit in hits){
-                    selectedInteractable = hit.transform.GetComponent<IARInteractable>();
-                    if(selectedInteractable != null){
-                        touchData.hit = hit;
-                        break;
-                    } 
-                }
-               
-                touchData.selectedInteractable = selectedInteractable;
+                hitInteractables = hits.Select(hit => hit.transform.GetComponent<IARInteractable>()).Where(interactable => interactable != null).ToArray();
+
                 OnTouch.Invoke(touchData);
             }
             ChangeStatus(ARTouchData.Status.WAITING);
@@ -103,14 +98,18 @@ public class ARTouchController : MonoBehaviour{
 
             if(touchData.lastStatus == ARTouchData.Status.WAITING){
                 try{
-                    touchData.selectedInteractable?.OnHold();
+                    var holdable = (IHoldable)hitInteractables.FirstOrDefault((hit) => hit is IHoldable);
+                    if(holdable != null)
+                    {
+                        holdable.OnHold();
+                        touchData.selectedInteractable = holdable;
+                    }
                 }catch(System.Exception e){
                     Debug.LogError("ARTouchController: " + e.GetType().ToString() + " caught on " + touchData.selectedInteractable?.ToString() +" Hold Event");
                 }
                 OnHold.Invoke(touchData);
                 ChangeStatus(ARTouchData.Status.HOLDING);                
             }
-            Debug.DrawRay(ray.origin, ray.direction, Color.green);
 
         }
 
@@ -147,7 +146,7 @@ public class ARTouchController : MonoBehaviour{
 
         if (touchData.currentStatus == ARTouchData.Status.WAITING){
             try{
-                touchData.selectedInteractable?.OnTap();
+                //touchData.selectedInteractable?.OnTap();
             }catch(System.Exception e){
                 Debug.LogError("ARTouchController: " + e.GetType().ToString() + " caught on " + touchData.selectedInteractable?.ToString() +" Tap Event");
             }
@@ -155,7 +154,7 @@ public class ARTouchController : MonoBehaviour{
             
         //Catch Exceptions so the controller doesn't get stuck in the Holding or Waiting status
         try{
-            touchData.selectedInteractable?.OnRelease();
+            //touchData.selectedInteractable?.OnRelease();
         }catch(System.Exception e){
             Debug.LogError("ARTouchController: " + e.GetType().ToString() + " caught on " + touchData.selectedInteractable?.ToString() +" Release Event");
         }

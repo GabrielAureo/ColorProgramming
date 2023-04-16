@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 4232283486406827141}
   - component: {fileID: 607283032474489807}
   - component: {fileID: 6997700356134568906}
+  - component: {fileID: 3255282428167395612}
   m_Layer: 0
   m_Name: Conditional node
   m_TagString: Untagged
@@ -148,7 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 568f0b4dcef01ef44b32e3a6dc2b3e91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exclusiveMode: 0
   bottomAnchor: {x: 0, y: 0, z: 0}
   placementRotation: {x: 0, y: 0, z: 0, w: 1}
   rigidBody: {fileID: 0}
@@ -166,6 +166,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 3.16, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3255282428167395612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2759456722120366627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9299c6e95084304ba77801f426b5a53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movable: {fileID: 607283032474489807}
 --- !u!1 &6581479417321617636
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ namespace ColorProgramming
     public class ItemController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         private bool isPressed = false;
-        private float holdTime = 0.5f; // Adjust as needed
+        private float holdTime = 0.25f; // Adjust as needed
 
         [SerializeField] private GameObject movablePrefab;
         [SerializeField] private int itemQuantity;

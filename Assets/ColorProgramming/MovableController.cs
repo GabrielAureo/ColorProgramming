@@ -7,7 +7,7 @@ public class MovableController : MonoBehaviour{
     HingeJoint hinge;
     public Transform previewer;
 
-    private BaseSocket currentTargetSocket;
+    private IMovableProvider currentTargetSocket;
 
     private void Awake(){
         hinge = GetComponent<HingeJoint>();
@@ -26,11 +26,13 @@ public class MovableController : MonoBehaviour{
     }   
 
     private void Grab(ARTouchData touchData){
-        if(!(touchData.selectedInteractable is BaseSocket)) return;
-        var socket = touchData.selectedInteractable as BaseSocket;
+        if(!(touchData.selectedInteractable is IMovableProvider)) return;
+        var provider = touchData.selectedInteractable as IMovableProvider;
         isHolding = true;
 
-        var takenMovable = socket.TryTake(touchData);
+        if (!provider.ShouldTake()) return;
+
+        var takenMovable = provider.GetMovable(touchData);
         if (takenMovable)
         {
             currentMovable = takenMovable;
@@ -62,7 +64,7 @@ public class MovableController : MonoBehaviour{
              for (var i = 0; i < hitSize; i++)
             {
                 var hit = hits[i];
-                var isSocket = hit.transform.GetComponent<BaseSocket>();
+                var isSocket = hit.transform.GetComponent<IMovableProvider>();
                 if (currentTargetSocket != null)
                 {
                     isTargeting = true;
@@ -91,32 +93,30 @@ public class MovableController : MonoBehaviour{
     {
         if (touchData.lastStatus != ARTouchData.Status.HOLDING) return;
 
+        if(touchData.selectedInteractable is not IMovableProvider) return;
+        IMovableProvider lastProvider = (IMovableProvider)touchData.selectedInteractable;
 
-        if(!(touchData.selectedInteractable is BaseSocket)) return;
-        BaseSocket lastSocket = (BaseSocket)touchData.selectedInteractable;
-
-        BaseSocket target = null;
+        IMovableReceiver target = null;
 
         RaycastHit[] hits;
         hits = Physics.RaycastAll(touchData.ray);
 
         if(hits.Length > 0){
             foreach(var hit in hits){
-                target = hit.transform.GetComponent<BaseSocket>();
-                if(target != null) break;
+                if(hit.transform.TryGetComponent(out target)) break;
             }
         }
 
         if (target == null) return;
 
-        var movable = lastSocket.GetMovable(touchData);
-        var didPlace =  target.TryPlaceObject(touchData, movable);
+        var movable = lastProvider.GetMovable(touchData);
+        if (!target.ShouldPlace(movable)) return;
 
-        if (didPlace)
-        {
-            hinge.connectedBody = null;
-            movable.rigidBody.isKinematic = true;
-        }
+        target.OnPlace(touchData, movable);
+
+
+        hinge.connectedBody = null;
+        movable.rigidBody.isKinematic = true;
         isHolding = false;
 
     }

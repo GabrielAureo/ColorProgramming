@@ -1,3 +1,4 @@
+using Assets.ColorProgramming;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -5,7 +6,6 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Movable : MonoBehaviour{
-    public bool exclusiveMode;
     public Vector3 bottomAnchor;
     public Quaternion placementRotation = Quaternion.identity;
     [HideInInspector] public Rigidbody rigidBody;

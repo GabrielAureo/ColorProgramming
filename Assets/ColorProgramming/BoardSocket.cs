@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.ColorProgramming
 {
-    public class BoardSocket : BaseSocket
+    public class BoardSocket : MonoBehaviour, IMovableReceiver
     {
         [SerializeField]
         private Movable[] initialMovables;
@@ -16,23 +16,8 @@ namespace Assets.ColorProgramming
         {
             movables = new List<Movable>(initialMovables);
         }
-        public override Movable GetMovable(ARTouchData touchData)
-        {
-            RaycastHit[] hits;
-            hits = Physics.RaycastAll(touchData.ray, Mathf.Infinity, 1 << LayerMask.NameToLayer("Default"));
-            foreach (var hit in hits)
-            {
-                var movable = hit.transform.GetComponent<Movable>();
-                if (movable != null)
-                {
-                    movables.Remove(movable);
-                    return movable;
-                }
-            }
-            return null;
-        }
 
-        protected override void OnPlace(ARTouchData touchData, Movable movable)
+        public void OnPlace(ARTouchData touchData, Movable movable)
         {
             movable.transform.localPosition = touchData.hit.point;
             if (!movables.Contains(movable))
@@ -41,14 +26,14 @@ namespace Assets.ColorProgramming
             }
         }
 
-        protected override bool ShouldPlace( Movable movable)
+        public bool ShouldPlace(Movable movable)
         {
             return true;
         }
 
-        protected override bool TakeOperation()
+        public void OnRelease()
         {
-            return true;
+            throw new System.NotImplementedException();
         }
     }
 }
