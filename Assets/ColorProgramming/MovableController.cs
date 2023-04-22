@@ -116,6 +116,7 @@ public class MovableController : MonoBehaviour{
         hinge.connectedBody = null;
         currentMovable.rigidBody.isKinematic = true;
         isHolding = false;
+        currentMovable = null;
 
     }
 

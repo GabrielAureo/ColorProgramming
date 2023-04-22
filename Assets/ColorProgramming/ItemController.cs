@@ -5,18 +5,21 @@ namespace ColorProgramming
     using TMPro;
     using UnityEngine;
     using UnityEngine.EventSystems;
+    using UnityEngine.UI;
 
     public class ItemController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         private bool isPressed = false;
-        private float holdTime = 0.25f; // Adjust as needed
+        private float holdTime = 0.25f;
+        private float currentHold = 0f;
 
         [SerializeField] private GameObject movablePrefab;
         [SerializeField] private int itemQuantity;
-        public int itemCount { get; private set; }
+        public int ItemCount { get; private set; }
 
         [Header("Components")]
         [SerializeField] private TextMeshProUGUI itemCountGUI;
+        [SerializeField] private Image loadingRing;
 
         private void Awake()
         {
@@ -26,40 +29,41 @@ namespace ColorProgramming
         {
             if (isPressed)
             {
-                holdTime -= Time.deltaTime;
-                if (holdTime <= 0)
+                currentHold += Time.deltaTime;
+                if (currentHold >= holdTime)
                 {
                     OnHold();
                     isPressed = false;
                 }
             }
+            loadingRing.fillAmount = (currentHold / holdTime);
         }
 
         private void UpdateCount(int newCount)
         {
-            itemCount = newCount;
-            itemCountGUI.text = itemCount.ToString();
+            ItemCount = newCount;
+            itemCountGUI.text = ItemCount.ToString();
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             isPressed = true;
-            holdTime = 0.5f; // Reset hold time
+            currentHold = 0f; // Reset hold time
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             isPressed = false;
-            holdTime = 0.5f; // Reset hold time
+            currentHold = 0f; // Reset hold time
         }
 
         private void OnHold()
         {
-            if (itemCount == 0) return;
+            if (ItemCount == 0) return;
             var movableObject = Instantiate(movablePrefab);
             var movable = movableObject.GetComponent<Movable>();
             GameManager.Instance.MovableController.Grab(movable);
-            UpdateCount(itemCount- 1);
+            UpdateCount(ItemCount- 1);
 
 
         }
