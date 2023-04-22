@@ -93,8 +93,7 @@ public class MovableController : MonoBehaviour{
     {
         if (touchData.lastStatus != ARTouchData.Status.HOLDING) return;
 
-        if(touchData.selectedInteractable is not IMovableProvider) return;
-        IMovableProvider lastProvider = (IMovableProvider)touchData.selectedInteractable;
+        if(currentMovable is null) return;
 
         IMovableReceiver target = null;
 
@@ -109,14 +108,13 @@ public class MovableController : MonoBehaviour{
 
         if (target == null) return;
 
-        var movable = lastProvider.GetMovable(touchData);
-        if (!target.ShouldPlace(movable)) return;
+        if (!target.ShouldPlace(currentMovable)) return;
 
-        target.OnPlace(touchData, movable);
+        target.OnPlace(touchData, currentMovable);
 
 
         hinge.connectedBody = null;
-        movable.rigidBody.isKinematic = true;
+        currentMovable.rigidBody.isKinematic = true;
         isHolding = false;
 
     }
