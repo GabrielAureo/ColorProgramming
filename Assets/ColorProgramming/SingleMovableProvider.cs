@@ -1,12 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.ColorProgramming
+namespace ColorProgramming
 {
     [RequireComponent(typeof(Movable))]
-    public class SingleMovableProvider : MonoBehaviour, IMovableProvider
+    public class SingleMovableProvider : MonoBehaviour, IMovableProvider, ITappable
     {
-        [SerializeField] private Movable movable;
+        [SerializeField]
+        private Movable movable;
+
+        [SerializeField]
+        private SingleMovableMenu movableMenu;
+
         public Movable GetMovable(ARTouchData touchData)
         {
             return movable;
@@ -15,6 +20,11 @@ namespace Assets.ColorProgramming
         public void OnHold() { }
 
         public void OnInvalidDrop()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnTap()
         {
             throw new System.NotImplementedException();
         }

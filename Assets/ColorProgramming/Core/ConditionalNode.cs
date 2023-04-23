@@ -2,25 +2,28 @@ namespace ColorProgramming.Core
 {
     public class ConditionalNode : Node
     {
-        public Pattern CheckedPattern { get; private set; }
-        public Pattern TruePattern { get; private set; }
-        public Pattern FalsePattern { get; private set; }
+        public Element CheckedElement { get; private set; }
+        public Element TrueElement { get; private set; }
+        public Element FalseElement { get; private set; }
         public bool IsNot { get; private set; }
 
-        public ConditionalNode(Pattern conditionalColor, Pattern trueColor, Pattern falsecolor, bool isNot = false) : base()
+        public ConditionalNode(
+            Element conditionalElement,
+            Element trueElement,
+            Element falseElement,
+            bool isNot = false
+        )
+            : base()
         {
-            CheckedPattern = conditionalColor;
-            TruePattern = trueColor;
-            FalsePattern = falsecolor;
+            CheckedElement = conditionalElement;
+            TrueElement = trueElement;
+            FalseElement = falseElement;
             IsNot = isNot;
-
         }
 
-        public Pattern EvalNode(Player player)
+        public Element EvalNode(Player player)
         {
-            return player.CurrentPattern == CheckedPattern && !IsNot ? TruePattern : FalsePattern;
+            return player.CurrentElement == CheckedElement && !IsNot ? TrueElement : FalseElement;
         }
-
-
     }
 }

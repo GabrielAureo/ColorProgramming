@@ -1,26 +1,30 @@
 ﻿using UnityEngine;
 
-public class GameManager : MonoBehaviour
+namespace ColorProgramming
 {
-    private static GameManager instance;
-
-    public static GameManager Instance { get { return instance; } }
-
-    public ARTouchController TouchController;
-    public MovableController MovableController;
-
-    private void Awake()
+    public class GameManager : MonoBehaviour
     {
-        if (instance != null && instance != this)
+        private static GameManager instance;
+
+        public static GameManager Instance
         {
-            Destroy(this.gameObject);
+            get { return instance; }
         }
-        else
+
+        public ARTouchController TouchController;
+        public MovableController MovableController;
+
+        private void Awake()
         {
-            instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            if (instance != null && instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                instance = this;
+                DontDestroyOnLoad(this.gameObject);
+            }
         }
     }
-
-
 }

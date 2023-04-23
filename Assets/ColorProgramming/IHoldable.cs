@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Assets.ColorProgramming
+namespace ColorProgramming
 {
     public interface IHoldable : IARInteractable
     {
         public void OnHold();
-
     }
 }

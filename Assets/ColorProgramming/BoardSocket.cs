@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.ColorProgramming
+namespace ColorProgramming
 {
     public class BoardSocket : MonoBehaviour, IMovableReceiver
     {

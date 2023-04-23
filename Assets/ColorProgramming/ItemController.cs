@@ -13,18 +13,25 @@ namespace ColorProgramming
         private float holdTime = 0.25f;
         private float currentHold = 0f;
 
-        [SerializeField] private GameObject movablePrefab;
-        [SerializeField] private int itemQuantity;
+        [SerializeField]
+        private GameObject movablePrefab;
+
+        [SerializeField]
+        private int itemQuantity;
         public int ItemCount { get; private set; }
 
         [Header("Components")]
-        [SerializeField] private TextMeshProUGUI itemCountGUI;
-        [SerializeField] private Image loadingRing;
+        [SerializeField]
+        private TextMeshProUGUI itemCountGUI;
+
+        [SerializeField]
+        private Image loadingRing;
 
         private void Awake()
         {
             UpdateCount(itemQuantity);
         }
+
         private void Update()
         {
             if (isPressed)
@@ -59,13 +66,12 @@ namespace ColorProgramming
 
         private void OnHold()
         {
-            if (ItemCount == 0) return;
+            if (ItemCount == 0)
+                return;
             var movableObject = Instantiate(movablePrefab);
             var movable = movableObject.GetComponent<Movable>();
             GameManager.Instance.MovableController.Grab(movable);
-            UpdateCount(ItemCount- 1);
-
-
+            UpdateCount(ItemCount - 1);
         }
     }
 }

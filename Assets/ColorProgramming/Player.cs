@@ -1,4 +1,5 @@
 ﻿using ColorProgramming;
+using ColorProgramming.Core;
 using System.Collections;
 using UnityEngine;
 
@@ -6,19 +7,21 @@ namespace ColorProgramming
 {
     public class Player
     {
-        public Pattern CurrentPattern { get; private set; }
+        public Element CurrentElement { get; private set; }
 
-        public Player() {
-            CurrentPattern = Pattern.CLEAR;
-        }
-        public Player(Pattern currentPattern) { 
-            CurrentPattern = currentPattern;
-        }
-
-        public void SetPattern(Pattern pattern)
+        public Player()
         {
-            CurrentPattern = pattern;
+            CurrentElement = null;
         }
 
+        public Player(Element currentElement)
+        {
+            CurrentElement = currentElement;
+        }
+
+        public void SetElement(Element element)
+        {
+            CurrentElement = element;
+        }
     }
 }
