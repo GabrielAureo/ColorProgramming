@@ -4,13 +4,10 @@ using UnityEngine;
 namespace ColorProgramming
 {
     [RequireComponent(typeof(Movable))]
-    public class SingleMovableProvider : MonoBehaviour, IMovableProvider, ITappable
+    public class SingleMovableProvider : MonoBehaviour, IMovableProvider
     {
         [SerializeField]
         private Movable movable;
-
-        [SerializeField]
-        private SingleMovableMenu movableMenu;
 
         public Movable GetMovable(ARTouchData touchData)
         {
@@ -20,11 +17,6 @@ namespace ColorProgramming
         public void OnHold() { }
 
         public void OnInvalidDrop()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void OnTap()
         {
             throw new System.NotImplementedException();
         }

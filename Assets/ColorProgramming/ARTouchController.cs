@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.Events;
 using System;
-using Assets.ColorProgramming;
 using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
 using System.Linq;
@@ -97,8 +96,8 @@ namespace ColorProgramming
                 );
                 if (hits.Length > 0)
                 {
-                    hitInteractables = hits.Select(
-                            hit => hit.transform.GetComponent<IARInteractable>()
+                    hitInteractables = hits.SelectMany(
+                            hit => hit.transform.GetComponents<IARInteractable>()
                         )
                         .Where(interactable => interactable != null)
                         .ToArray();
@@ -177,7 +176,13 @@ namespace ColorProgramming
             {
                 try
                 {
-                    //touchData.selectedInteractable?.OnTap();
+                    var tappable = (ITappable)
+                        hitInteractables.FirstOrDefault((hit) => hit is ITappable);
+
+                    if (tappable != null)
+                    {
+                        tappable.OnTap();
+                    }
                 }
                 catch (Exception e)
                 {

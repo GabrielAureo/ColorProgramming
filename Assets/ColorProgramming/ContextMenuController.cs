@@ -6,6 +6,37 @@ namespace ColorProgramming
 {
     public class ContextMenuController : MonoBehaviour
     {
-        public void CreateContextMenu(ColorProgramming.ContextMenu menu) { }
+        [SerializeField]
+        private GameObject buttonPrefab;
+
+        [SerializeField]
+        private RectTransform buttonsContainer;
+
+        public void SetContextMenu(ContextMenu menu)
+        {
+            ResetButtons();
+            foreach (var action in menu.data.actions)
+            {
+                var buttonObject = Instantiate(buttonPrefab, buttonsContainer);
+                var contextButton = buttonObject.GetComponent<ContextButton>();
+                contextButton.SetupButton(action);
+            }
+
+            transform.position = menu.worldPosition;
+        }
+
+        private void ResetButtons()
+        {
+            for (var i = 0; i < buttonsContainer.childCount; i++)
+            {
+                var child = buttonsContainer.GetChild(i);
+                Destroy(child.gameObject);
+            }
+        }
+
+        void Update()
+        {
+            transform.LookAt(Camera.main.transform);
+        }
     }
 }

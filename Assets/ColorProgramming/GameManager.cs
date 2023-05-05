@@ -13,6 +13,7 @@ namespace ColorProgramming
 
         public ARTouchController TouchController;
         public MovableController MovableController;
+        public ContextMenuController ContextMenuController;
 
         private void Awake()
         {
