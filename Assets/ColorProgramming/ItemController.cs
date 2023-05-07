@@ -70,7 +70,9 @@ namespace ColorProgramming
                 return;
             var movableObject = Instantiate(movablePrefab);
             var movable = movableObject.GetComponent<Movable>();
-            GameManager.Instance.MovableController.Grab(movable);
+            var movableService =
+                GameManager.Instance.TouchController.TouchServiceManager.GetService<MovableService>();
+            movableService?.Grab(movable);
             UpdateCount(ItemCount - 1);
         }
     }

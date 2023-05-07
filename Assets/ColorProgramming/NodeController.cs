@@ -7,10 +7,9 @@ using UnityEngine.Events;
 
 namespace ColorProgramming
 {
-    public abstract class NodeController<T> : MonoBehaviour
-        where T : Node
+    public abstract class NodeController : MonoBehaviour
     {
-        public T Node { get; private set; }
+        public Node Node { get; private set; }
 
         [SerializeField]
         protected ContextMenuData menuData;

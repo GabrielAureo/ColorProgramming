@@ -1,13 +1,17 @@
 ﻿using ColorProgramming.Core;
-using System.Collections;
-using UnityEngine;
+using System.Diagnostics;
 
 namespace ColorProgramming
 {
     public class NodeConnectService : ARTouchService
     {
-        public NodeConnectService(bool isExclusive)
-            : base(isExclusive) { }
+        private NodeController targetNodeController;
+
+        public NodeConnectService(NodeController targetNodeController, bool isExclusive)
+            : base(isExclusive)
+        {
+            this.targetNodeController = targetNodeController;
+        }
 
         public override void OnHold(ARTouchData touchData) { }
 
@@ -15,7 +19,14 @@ namespace ColorProgramming
 
         public override void OnTap(ARTouchData touchData)
         {
-            throw new System.NotImplementedException();
+            GameManager.Instance.TouchController.TouchServiceManager.UnregisterService(this);
+            if (touchData.selectedInteractable is not NodeController controller)
+                return;
+
+            GameManager.Instance.NodeConnectController.CreateConnection(
+                targetNodeController,
+                controller
+            );
         }
     }
 }

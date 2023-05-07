@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ColorProgramming
@@ -9,22 +10,16 @@ namespace ColorProgramming
     public class ARTouchServiceManager
     {
         private readonly Dictionary<Type, ARTouchService> services = new();
-        private readonly List<ARTouchService> activeServices = new();
 
         public void RegisterService<T>(T service)
             where T : ARTouchService
         {
             services[typeof(T)] = service;
 
-            if (!activeServices.Contains(service))
-            {
-                activeServices.Add(service);
-            }
-
             // If an exclusive service is registered, disable all active services except the exclusive one
             if (service.IsExclusive)
             {
-                foreach (var activeService in activeServices)
+                foreach (var activeService in services.Values.ToList())
                 {
                     if (!activeService.IsExclusive)
                     {
@@ -41,7 +36,7 @@ namespace ColorProgramming
 
             if (service.IsExclusive)
             {
-                foreach (var activeService in activeServices)
+                foreach (var activeService in services.Values.ToList())
                 {
                     if (!activeService.IsExclusive)
                     {
@@ -64,7 +59,7 @@ namespace ColorProgramming
 
         public void TriggerTapEvents(ARTouchData touchData)
         {
-            foreach (var service in activeServices)
+            foreach (var service in services.Values.ToList())
             {
                 if (service.IsEnabled)
                 {
@@ -75,7 +70,7 @@ namespace ColorProgramming
 
         public void TriggerHoldEvents(ARTouchData touchData)
         {
-            foreach (var service in activeServices)
+            foreach (var service in services.Values.ToList())
             {
                 if (service.IsEnabled)
                 {
@@ -86,7 +81,7 @@ namespace ColorProgramming
 
         public void TriggerReleaseEvents(ARTouchData touchData)
         {
-            foreach (var service in activeServices)
+            foreach (var service in services.Values.ToList())
             {
                 if (service.IsEnabled)
                 {

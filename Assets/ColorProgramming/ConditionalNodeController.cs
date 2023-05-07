@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace ColorProgramming
 {
-    public class ConditionalNodeController : NodeController<ConditionalNode>, ITappable
+    public class ConditionalNodeController : NodeController, ITappable
     {
         public void OnTap()
         {
@@ -21,13 +21,13 @@ namespace ColorProgramming
             {
                 case "connect":
                     return () =>
-                        GameManager.Instance.TouchController.RegisterService(
-                            new NodeConnectService(true)
+                        GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                            new NodeConnectService(this, true)
                         );
                 case "disconnect":
                     return () =>
-                        GameManager.Instance.TouchController.RegisterService(
-                            new NodeConnectService(true)
+                        GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                            new NodeConnectService(this, true)
                         );
                 default:
                     return () => { };

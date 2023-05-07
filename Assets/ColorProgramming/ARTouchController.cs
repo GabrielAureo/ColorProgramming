@@ -17,9 +17,7 @@ namespace ColorProgramming
         public Ray ray;
 
         public ARTouchData touchData;
-
-        private ARTouchServiceManager touchServiceManager;
-
+        public ARTouchServiceManager TouchServiceManager { get; private set; }
         private IEnumerable<IARInteractable> hitInteractables;
 
         [SerializeField]
@@ -27,10 +25,9 @@ namespace ColorProgramming
 
         private void OnEnable()
         {
-            touchData = new ARTouchData();
-            touchData.currentStatus = ARTouchData.Status.NO_TOUCH;
-            touchServiceManager = new ARTouchServiceManager();
-            touchServiceManager.RegisterService(new MovableService(hinge));
+            touchData = new ARTouchData { currentStatus = ARTouchData.Status.NO_TOUCH };
+            TouchServiceManager = new ARTouchServiceManager();
+            TouchServiceManager.RegisterService(new MovableService(hinge));
         }
 
         private bool IsOverUI()
@@ -52,16 +49,6 @@ namespace ColorProgramming
         void Update()
         {
             HandleInput();
-        }
-
-        public void RegisterService(ARTouchService touchService)
-        {
-            touchServiceManager.RegisterService(touchService);
-        }
-
-        public void UnregisterService(ARTouchService touchService)
-        {
-            touchServiceManager.UnregisterService(touchService);
         }
 
         public void HandleInput()
@@ -113,8 +100,6 @@ namespace ColorProgramming
                         )
                         .Where(interactable => interactable != null)
                         .ToArray();
-
-                    touchServiceManager.TriggerTapEvents(touchData);
                 }
                 ChangeStatus(ARTouchData.Status.WAITING);
             }
@@ -143,7 +128,7 @@ namespace ColorProgramming
                                 + e.StackTrace
                         );
                     }
-                    touchServiceManager.TriggerHoldEvents(touchData);
+                    TouchServiceManager.TriggerHoldEvents(touchData);
                     ChangeStatus(ARTouchData.Status.HOLDING);
                 }
             }
@@ -182,7 +167,7 @@ namespace ColorProgramming
                     }
                 }
             }
-            touchServiceManager.TriggerReleaseEvents(touchData);
+            TouchServiceManager.TriggerReleaseEvents(touchData);
 
             if (touchData.currentStatus == ARTouchData.Status.WAITING)
             {
@@ -194,7 +179,9 @@ namespace ColorProgramming
                     if (tappable != null)
                     {
                         tappable.OnTap();
+                        touchData.selectedInteractable = tappable;
                     }
+                    TouchServiceManager.TriggerTapEvents(touchData);
                 }
                 catch (Exception e)
                 {
