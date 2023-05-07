@@ -17,10 +17,11 @@ namespace ColorProgramming
         [SerializeField]
         private Button button;
 
-        public void SetupButton(ContextMenuAction action)
+        public void SetupButton(RuntimeContextMenuAction action)
         {
             textMesh.text = action.ActionTitle;
             icon.sprite = action.ActionIcon;
+            button.onClick.AddListener(action.Action);
         }
     }
 }

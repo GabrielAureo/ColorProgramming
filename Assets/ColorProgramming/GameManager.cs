@@ -12,10 +12,10 @@ namespace ColorProgramming
         }
 
         public ARTouchController TouchController;
-        public MovableController MovableController;
+        public MovableService MovableController;
         public ContextMenuController ContextMenuController;
 
-        private void Awake()
+        private void OnEnable()
         {
             if (instance != null && instance != this)
             {

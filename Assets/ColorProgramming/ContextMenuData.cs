@@ -19,9 +19,16 @@ namespace ColorProgramming
         public string ActionSignal;
     }
 
+    public class RuntimeContextMenuAction
+    {
+        public string ActionTitle;
+        public Sprite ActionIcon;
+        public UnityAction Action;
+    }
+
     public class ContextMenu
     {
-        public ContextMenuData data { get; set; }
+        public RuntimeContextMenuAction[] data { get; set; }
         public Vector3 worldPosition { get; set; }
     }
 }

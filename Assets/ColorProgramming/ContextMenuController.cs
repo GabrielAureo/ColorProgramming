@@ -15,7 +15,7 @@ namespace ColorProgramming
         public void SetContextMenu(ContextMenu menu)
         {
             ResetButtons();
-            foreach (var action in menu.data.actions)
+            foreach (var action in menu.data)
             {
                 var buttonObject = Instantiate(buttonPrefab, buttonsContainer);
                 var contextButton = buttonObject.GetComponent<ContextButton>();
@@ -36,7 +36,10 @@ namespace ColorProgramming
 
         void Update()
         {
-            transform.LookAt(Camera.main.transform);
+            //transform.LookAt(Camera.main.transform, Vector3.up);
+            transform.rotation = Quaternion.LookRotation(
+                transform.position - Camera.main.transform.position
+            );
         }
     }
 }

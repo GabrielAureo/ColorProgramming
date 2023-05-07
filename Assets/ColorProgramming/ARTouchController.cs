@@ -4,7 +4,6 @@ using System.Collections;
 using UnityEngine.Events;
 using System;
 using UnityEngine.EventSystems;
-using static UnityEngine.GraphicsBuffer;
 using System.Linq;
 
 namespace ColorProgramming
@@ -17,18 +16,21 @@ namespace ColorProgramming
         [HideInInspector]
         public Ray ray;
 
-        public static ARTouchData touchData;
+        public ARTouchData touchData;
 
-        public UnityEvent<ARTouchData> OnTouch;
-        public UnityEvent<ARTouchData> OnHold;
-        public UnityEvent<ARTouchData> OnRelease;
+        private ARTouchServiceManager touchServiceManager;
 
         private IEnumerable<IARInteractable> hitInteractables;
 
-        void Awake()
+        [SerializeField]
+        private HingeJoint hinge;
+
+        private void OnEnable()
         {
             touchData = new ARTouchData();
             touchData.currentStatus = ARTouchData.Status.NO_TOUCH;
+            touchServiceManager = new ARTouchServiceManager();
+            touchServiceManager.RegisterService(new MovableService(hinge));
         }
 
         private bool IsOverUI()
@@ -50,6 +52,16 @@ namespace ColorProgramming
         void Update()
         {
             HandleInput();
+        }
+
+        public void RegisterService(ARTouchService touchService)
+        {
+            touchServiceManager.RegisterService(touchService);
+        }
+
+        public void UnregisterService(ARTouchService touchService)
+        {
+            touchServiceManager.UnregisterService(touchService);
         }
 
         public void HandleInput()
@@ -102,7 +114,7 @@ namespace ColorProgramming
                         .Where(interactable => interactable != null)
                         .ToArray();
 
-                    OnTouch.Invoke(touchData);
+                    touchServiceManager.TriggerTapEvents(touchData);
                 }
                 ChangeStatus(ARTouchData.Status.WAITING);
             }
@@ -128,9 +140,10 @@ namespace ColorProgramming
                                 + " caught on "
                                 + touchData.selectedInteractable?.ToString()
                                 + " Hold Event"
+                                + e.StackTrace
                         );
                     }
-                    OnHold.Invoke(touchData);
+                    touchServiceManager.TriggerHoldEvents(touchData);
                     ChangeStatus(ARTouchData.Status.HOLDING);
                 }
             }
@@ -169,8 +182,7 @@ namespace ColorProgramming
                     }
                 }
             }
-
-            OnRelease.Invoke(touchData);
+            touchServiceManager.TriggerReleaseEvents(touchData);
 
             if (touchData.currentStatus == ARTouchData.Status.WAITING)
             {
@@ -191,7 +203,8 @@ namespace ColorProgramming
                             + e.GetType().ToString()
                             + " caught on "
                             + touchData.selectedInteractable?.ToString()
-                            + " Tap Event"
+                            + " Tap Event\n"
+                            + e.StackTrace
                     );
                 }
             }
@@ -208,7 +221,8 @@ namespace ColorProgramming
                         + e.GetType().ToString()
                         + " caught on "
                         + touchData.selectedInteractable?.ToString()
-                        + " Release Event"
+                        + " Release Event\n"
+                        + e.StackTrace
                 );
             }
 
