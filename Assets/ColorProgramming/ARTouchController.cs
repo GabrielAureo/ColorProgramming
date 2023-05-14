@@ -113,7 +113,6 @@ namespace ColorProgramming
                             hitInteractables.FirstOrDefault((hit) => hit is IHoldable);
                         if (holdable != null)
                         {
-                            holdable.OnHold();
                             touchData.selectedInteractable = holdable;
                         }
                     }
@@ -159,8 +158,7 @@ namespace ColorProgramming
                 IARInteractable selectedInteractable = null;
                 foreach (var hit in hits)
                 {
-                    selectedInteractable = hit.transform.GetComponent<IARInteractable>();
-                    if (selectedInteractable != null)
+                    if (hit.transform.TryGetComponent(out selectedInteractable))
                     {
                         touchData.hit = hit;
                         break;
@@ -178,7 +176,6 @@ namespace ColorProgramming
 
                     if (tappable != null)
                     {
-                        tappable.OnTap();
                         touchData.selectedInteractable = tappable;
                     }
                     TouchServiceManager.TriggerTapEvents(touchData);

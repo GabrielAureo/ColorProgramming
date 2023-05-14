@@ -1834,6 +1834,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 7078245752815913911, guid: c1ca171a8fe365c449abd664366c2a00,
     type: 3}
   buttonsContainer: {fileID: 748338323}
+  contextCanvas: {fileID: 1800236463}
 --- !u!1 &1888097646
 GameObject:
   m_ObjectHideFlags: 0

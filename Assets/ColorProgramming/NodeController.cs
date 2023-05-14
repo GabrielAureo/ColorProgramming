@@ -7,14 +7,16 @@ using UnityEngine.Events;
 
 namespace ColorProgramming
 {
-    public abstract class NodeController : MonoBehaviour
+    public abstract class NodeController : MonoBehaviour, ITappable
     {
         public Node Node { get; private set; }
 
         [SerializeField]
         protected ContextMenuData menuData;
 
-        protected void BuildMenu(Vector3 menuWorldPosition)
+        public void SetupController(Node node) => Node = node;
+
+        public ContextMenu GetContextMenu()
         {
             var data = menuData.actions
                 .Select(
@@ -32,8 +34,11 @@ namespace ColorProgramming
                     }
                 )
                 .ToArray();
-            var contextMenu = new ContextMenu() { data = data, worldPosition = menuWorldPosition, };
-            GameManager.Instance.ContextMenuController.SetContextMenu(contextMenu);
+            return new ContextMenu()
+            {
+                data = data,
+                worldPosition = transform.position + (Vector3.up * 3f)
+            };
         }
 
         protected abstract UnityAction ParseActionSignal(string actionSignal);

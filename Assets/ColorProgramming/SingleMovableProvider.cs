@@ -14,8 +14,6 @@ namespace ColorProgramming
             return movable;
         }
 
-        public void OnHold() { }
-
         public void OnInvalidDrop()
         {
             throw new System.NotImplementedException();

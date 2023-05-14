@@ -1,50 +1,27 @@
 using System;
+using System.Collections.Generic;
 
 namespace ColorProgramming.Core
 {
     public abstract class Node
     {
         public Guid Id { get; private set; }
-        public Node Connected { get; private set; }
 
         protected Node()
         {
             Id = Guid.NewGuid();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        //public void SetConnection(Node other, bool createReverse = true)
+        //{
+        //    Edges.Add(new Edge(this, other));
+        //    if (createReverse)
+        //        other.SetConnection(this, false);
+        //}
 
-            if (GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            Node other = (Node)obj;
-            return Id == other.Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-
-        public void SetConnection(Node other)
-        {
-            this.Connected = other;
-        }
-        public void UnsetConnection()
-        {
-            this.Connected = null;
-        }
-
+        //public void RemoveConnections()
+        //{
+        //    Edges = new List<Edge> { };
+        //}
     }
 }

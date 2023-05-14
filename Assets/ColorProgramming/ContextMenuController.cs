@@ -12,9 +12,21 @@ namespace ColorProgramming
         [SerializeField]
         private RectTransform buttonsContainer;
 
+        [SerializeField]
+        private Canvas contextCanvas;
+
+        public void Awake()
+        {
+            GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                new ContextMenuService(false)
+            );
+            EnableMenu(false);
+        }
+
         public void SetContextMenu(ContextMenu menu)
         {
             ResetButtons();
+            EnableMenu(true);
             foreach (var action in menu.data)
             {
                 var buttonObject = Instantiate(buttonPrefab, buttonsContainer);
@@ -23,6 +35,11 @@ namespace ColorProgramming
             }
 
             transform.position = menu.worldPosition;
+        }
+
+        public void EnableMenu(bool enabled)
+        {
+            contextCanvas.enabled = enabled;
         }
 
         private void ResetButtons()

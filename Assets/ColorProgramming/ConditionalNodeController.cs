@@ -6,32 +6,24 @@ using UnityEngine.Events;
 
 namespace ColorProgramming
 {
-    public class ConditionalNodeController : NodeController, ITappable
+    public class ConditionalNodeController : NodeController
     {
-        public void OnTap()
-        {
-            BuildMenu(
-                new Vector3(transform.position.x, transform.position.y + 3f, transform.position.z)
-            );
-        }
-
         protected override UnityAction ParseActionSignal(string actionSignal)
         {
-            switch (actionSignal)
+            return actionSignal switch
             {
-                case "connect":
-                    return () =>
+                "connect"
+                    => () =>
                         GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
                             new NodeConnectService(this, true)
-                        );
-                case "disconnect":
-                    return () =>
+                        ),
+                "disconnect"
+                    => () =>
                         GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
                             new NodeConnectService(this, true)
-                        );
-                default:
-                    return () => { };
-            }
+                        ),
+                _ => () => { },
+            };
         }
     }
 }

@@ -5,7 +5,7 @@ namespace ColorProgramming
 {
     public class NodeConnectService : ARTouchService
     {
-        private NodeController targetNodeController;
+        private readonly NodeController targetNodeController;
 
         public NodeConnectService(NodeController targetNodeController, bool isExclusive)
             : base(isExclusive)

@@ -14,7 +14,10 @@ namespace ColorProgramming.Core
 
         public enum BoardChangedAction
         {
-            ADD, CONNECT, DISCONNECT, REMOVE
+            ADD,
+            CONNECT,
+            DISCONNECT,
+            REMOVE
         }
 
         public delegate void BoardChangeEventHandler(BoardNotification boardNotification);
@@ -28,13 +31,12 @@ namespace ColorProgramming.Core
             {
                 handler(eventArgs);
             }
-
         }
 
         public void AddNode(Node node)
         {
             Nodes.Add(node);
-            OnCollectionChanged( new BoardNotification(this, BoardChangedAction.ADD, node) );
+            OnCollectionChanged(new BoardNotification(this, BoardChangedAction.ADD, node));
         }
 
         public void ConnectNodes(Node from, Node to)
@@ -48,7 +50,7 @@ namespace ColorProgramming.Core
         public void RemoveConnection(Node from)
         {
             CheckIfNodesPresent(from);
-            from.UnsetConnection();
+            from.RemoveConnections();
             OnCollectionChanged(new BoardNotification(this, BoardChangedAction.DISCONNECT, from));
         }
 
@@ -69,7 +71,5 @@ namespace ColorProgramming.Core
                 }
             }
         }
-
-
     }
 }
