@@ -1,4 +1,5 @@
 ﻿using ColorProgramming.Core;
+using ColorProgramming.Enums;
 using System.Diagnostics;
 
 namespace ColorProgramming
@@ -6,11 +7,17 @@ namespace ColorProgramming
     public class NodeConnectService : ARTouchService
     {
         private readonly NodeController targetNodeController;
+        private readonly ConnectionServiceMode mode;
 
-        public NodeConnectService(NodeController targetNodeController, bool isExclusive)
+        public NodeConnectService(
+            NodeController targetNodeController,
+            ConnectionServiceMode mode,
+            bool isExclusive
+        )
             : base(isExclusive)
         {
             this.targetNodeController = targetNodeController;
+            this.mode = mode;
         }
 
         public override void OnHold(ARTouchData touchData) { }
@@ -23,10 +30,17 @@ namespace ColorProgramming
             if (touchData.selectedInteractable is not NodeController controller)
                 return;
 
-            GameManager.Instance.NodeConnectController.CreateConnection(
-                targetNodeController,
-                controller
-            );
+            if (mode == ConnectionServiceMode.CONNECT)
+            {
+                GameManager.Instance.BoardController.ConnectNodes(targetNodeController, controller);
+            }
+            else
+            {
+                GameManager.Instance.BoardController.DisconnectNodes(
+                    targetNodeController,
+                    controller
+                );
+            }
         }
     }
 }

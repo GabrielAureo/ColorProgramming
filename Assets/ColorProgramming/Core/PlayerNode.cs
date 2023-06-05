@@ -5,16 +5,12 @@ using UnityEngine;
 
 namespace ColorProgramming
 {
-    public class Player
+    public class PlayerNode : Node
     {
-        public Element CurrentElement { get; private set; }
+        public Element? CurrentElement { get; private set; }
 
-        public Player()
-        {
-            CurrentElement = null;
-        }
-
-        public Player(Element currentElement)
+        public PlayerNode(Element currentElement)
+            : base()
         {
             CurrentElement = currentElement;
         }

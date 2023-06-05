@@ -8,15 +8,29 @@ namespace ColorProgramming.Core
 {
     public class Edge
     {
-        public Node Node { get; private set; }
-        public Node Other { get; private set; }
+        public Node From { get; private set; }
+        public Node To { get; private set; }
+        public Guid Id { get; private set; }
 
-        public Edge(Node node, Node other)
+        public Edge(Node from, Node to)
         {
-            this.Node = node;
-            this.Other = other;
+            From = from;
+            To = to;
+            Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; private set; }
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            Edge other = (Edge)obj;
+            return Id.Equals(other.Id) && From.Equals(other.From) && To.Equals(other.To);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(From, To, Id);
+        }
     }
 }

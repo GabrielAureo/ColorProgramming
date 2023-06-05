@@ -15,13 +15,17 @@ namespace ColorProgramming
         [HideInInspector]
         public Mesh mesh;
         public UnityAction<IARInteractable, IARInteractable> releaseAction;
-        private Material materialInstance;
 
         void Awake()
         {
             rigidBody = GetComponent<Rigidbody>();
-            mesh = GetComponent<MeshFilter>().sharedMesh;
-            materialInstance = GetComponent<MeshRenderer>().material;
+            //mesh = GetComponent<MeshFilter>().sharedMesh;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(transform.position + bottomAnchor, new Vector3(3, 0, 3));
         }
     }
 }

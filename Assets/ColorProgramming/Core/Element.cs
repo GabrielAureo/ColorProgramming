@@ -6,5 +6,13 @@ using System.Threading.Tasks;
 
 namespace ColorProgramming.Core
 {
-    public class Element { }
+    public enum Element
+    {
+        ROCK,
+        AIR,
+        LIGHTNING,
+        WATER,
+        FIRE,
+        ICE
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace ColorProgramming
 {
+    using ColorProgramming.Core;
     using TMPro;
     using UnityEngine;
     using UnityEngine.EventSystems;
@@ -39,8 +40,8 @@ namespace ColorProgramming
                 currentHold += Time.deltaTime;
                 if (currentHold >= holdTime)
                 {
-                    OnHold();
                     isPressed = false;
+                    OnHold();
                 }
             }
             loadingRing.fillAmount = (currentHold / holdTime);
@@ -68,8 +69,19 @@ namespace ColorProgramming
         {
             if (ItemCount == 0)
                 return;
-            var movableObject = Instantiate(movablePrefab);
-            var movable = movableObject.GetComponent<Movable>();
+
+            Movable movable;
+            if (movablePrefab.TryGetComponent<NodeController>(out _))
+            {
+                var instantiatedNode = GameManager.Instance.BoardController.AddNode(movablePrefab);
+                movable = instantiatedNode.GetComponent<Movable>();
+            }
+            else
+            {
+                var movableObject = Instantiate(movablePrefab);
+                movable = movableObject.GetComponent<Movable>();
+            }
+
             var movableService =
                 GameManager.Instance.TouchController.TouchServiceManager.GetService<MovableService>();
             movableService?.Grab(movable);

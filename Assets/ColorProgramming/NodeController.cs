@@ -9,12 +9,10 @@ namespace ColorProgramming
 {
     public abstract class NodeController : MonoBehaviour, ITappable
     {
-        public Node Node { get; private set; }
+        public Node Node;
 
         [SerializeField]
         protected ContextMenuData menuData;
-
-        public void SetupController(Node node) => Node = node;
 
         public ContextMenu GetContextMenu()
         {
@@ -41,6 +39,26 @@ namespace ColorProgramming
             };
         }
 
-        protected abstract UnityAction ParseActionSignal(string actionSignal);
+        protected UnityAction ParseActionSignal(string actionSignal)
+        {
+            return actionSignal switch
+            {
+                "connect"
+                    => () =>
+                        GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                            new NodeConnectService(this, Enums.ConnectionServiceMode.CONNECT, true)
+                        ),
+                "disconnect"
+                    => () =>
+                        GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                            new NodeConnectService(
+                                this,
+                                Enums.ConnectionServiceMode.DISCONNECT,
+                                true
+                            )
+                        ),
+                _ => () => { },
+            };
+        }
     }
 }

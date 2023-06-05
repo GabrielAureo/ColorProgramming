@@ -12,16 +12,18 @@ namespace ColorProgramming.Core
             Id = Guid.NewGuid();
         }
 
-        //public void SetConnection(Node other, bool createReverse = true)
-        //{
-        //    Edges.Add(new Edge(this, other));
-        //    if (createReverse)
-        //        other.SetConnection(this, false);
-        //}
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
 
-        //public void RemoveConnections()
-        //{
-        //    Edges = new List<Edge> { };
-        //}
+            Node other = (Node)obj;
+            return Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

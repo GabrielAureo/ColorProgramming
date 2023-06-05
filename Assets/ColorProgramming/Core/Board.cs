@@ -1,73 +1,143 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace ColorProgramming.Core
 {
     public class Board
     {
-        public List<Node> Nodes { get; private set; }
+        public Dictionary<Node, List<Edge>> AdjacencyList { get; private set; }
 
-        public Board()
+        private Node sourceNode;
+
+        private Node targetNode;
+
+        public bool IsTraversable { get; private set; }
+
+        public Board(Node sourceNode, Node targetNode)
         {
-            this.Nodes = new List<Node>();
-        }
+            this.sourceNode = sourceNode;
+            this.targetNode = targetNode;
 
-        public enum BoardChangedAction
-        {
-            ADD,
-            CONNECT,
-            DISCONNECT,
-            REMOVE
-        }
-
-        public delegate void BoardChangeEventHandler(BoardNotification boardNotification);
-
-        public event BoardChangeEventHandler NodesChanged;
-
-        protected void OnCollectionChanged(BoardNotification eventArgs)
-        {
-            BoardChangeEventHandler handler = NodesChanged;
-            if (handler != null)
+            AdjacencyList = new Dictionary<Node, List<Edge>>()
             {
-                handler(eventArgs);
+                { sourceNode, new List<Edge>() },
+                { targetNode, new List<Edge>() },
+            };
+        }
+
+        private void TraversableUpdate()
+        {
+            IsTraversable = HasPath();
+        }
+
+        // TODO : Fix this to consider edges as bidirectional
+
+        public bool HasPath()
+        {
+            if (!AdjacencyList.ContainsKey(sourceNode) || !AdjacencyList.ContainsKey(targetNode))
+                return false;
+
+            HashSet<Node> visited = new HashSet<Node>();
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(sourceNode);
+
+            while (queue.Count > 0)
+            {
+                Node currentNode = queue.Dequeue();
+
+                if (currentNode.Equals(targetNode))
+                    return true;
+
+                visited.Add(currentNode);
+
+                if (AdjacencyList.ContainsKey(currentNode))
+                {
+                    foreach (Edge edge in AdjacencyList[currentNode])
+                    {
+                        if (!visited.Contains(edge.To))
+                            queue.Enqueue(edge.To);
+                    }
+                }
             }
+
+            return false;
         }
 
         public void AddNode(Node node)
         {
-            Nodes.Add(node);
-            OnCollectionChanged(new BoardNotification(this, BoardChangedAction.ADD, node));
+            if (!AdjacencyList.ContainsKey(node))
+                AdjacencyList[node] = new List<Edge>();
         }
 
-        public void ConnectNodes(Node from, Node to)
+        public Edge ConnectNodes(Node from, Node to)
         {
             CheckIfNodesPresent(from, to);
-            from.SetConnection(to);
 
-            OnCollectionChanged(new BoardNotification(this, BoardChangedAction.CONNECT, from, to));
+            var edge = new Edge(from, to);
+            AdjacencyList[edge.From].Add(edge);
+
+            TraversableUpdate();
+
+            return edge;
         }
 
-        public void RemoveConnection(Node from)
+        public Edge RemoveConnection(Node from, Node to)
         {
-            CheckIfNodesPresent(from);
-            from.RemoveConnections();
-            OnCollectionChanged(new BoardNotification(this, BoardChangedAction.DISCONNECT, from));
+            CheckIfNodesPresent(from, to);
+
+            List<Edge> edges = AdjacencyList[from];
+            Edge edgeToRemove = edges.Find(e => e.To.Equals(to));
+
+            if (edgeToRemove != null)
+            {
+                edges.Remove(edgeToRemove);
+                TraversableUpdate();
+                return edgeToRemove;
+            }
+            else
+            {
+                throw new InvalidOperationException("Edge not found in Board");
+            }
         }
 
         public void RemoveNode(Node node)
         {
             CheckIfNodesPresent(node);
-            Nodes.Remove(node);
-            OnCollectionChanged(new BoardNotification(this, BoardChangedAction.REMOVE, node));
+            List<Edge> edgesToRemove = AdjacencyList[node];
+            foreach (Edge edge in edgesToRemove)
+            {
+                AdjacencyList[edge.From].Remove(edge);
+            }
+
+            // Remove the node from the adjacency list
+            AdjacencyList.Remove(node);
+            TraversableUpdate();
         }
 
         private void CheckIfNodesPresent(params Node[] nodes)
         {
-            foreach (var node in nodes)
+            foreach (Node node in nodes)
             {
-                if (!Nodes.Contains(node))
+                if (!AdjacencyList.ContainsKey(node))
                 {
                     throw new InvalidOperationException("Node not in Board");
+                }
+            }
+        }
+
+        private void CheckIfEdgesPresent(params Edge[] edges)
+        {
+            foreach (Edge edge in edges)
+            {
+                if (
+                    !AdjacencyList.ContainsKey(edge.From)
+                    || !AdjacencyList[edge.From].Contains(edge)
+                )
+                {
+                    throw new InvalidOperationException("Edge not found in Board");
                 }
             }
         }

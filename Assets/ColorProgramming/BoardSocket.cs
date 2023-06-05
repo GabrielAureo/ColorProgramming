@@ -2,38 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ColorProgramming
 {
     public class BoardSocket : MonoBehaviour, IMovableReceiver
     {
-        [SerializeField]
-        private Movable[] initialMovables;
-
-        private List<Movable> movables;
-
-        private void Awake()
-        {
-            movables = new List<Movable>(initialMovables);
-        }
+        public UnityEvent<Movable[]> OnMovablesPlace;
 
         public void OnPlace(ARTouchData touchData, Movable movable)
         {
             movable.transform.localPosition = touchData.hit.point;
-            if (!movables.Contains(movable))
-            {
-                movables.Add(movable);
-            }
+            movable.transform.rotation = Quaternion.identity;
+            OnMovablesPlace.Invoke(new Movable[] { movable });
         }
 
         public bool ShouldPlace(Movable movable)
         {
             return true;
-        }
-
-        public void OnRelease()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

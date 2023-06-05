@@ -1,14 +1,15 @@
-﻿using UnityEngine;
+﻿using ColorProgramming.Core;
+using UnityEngine;
 
 namespace ColorProgramming
 {
     public class EdgeController : MonoBehaviour
     {
-        [HideInInspector]
-        public GameObject connectedObject1;
+        public Edge Edge;
 
-        [HideInInspector]
-        public GameObject connectedObject2;
+        public NodeController FromNodeController;
+        public NodeController ToNodeController;
+
         private LineRenderer lineRenderer;
 
         void Start()
@@ -23,8 +24,8 @@ namespace ColorProgramming
 
         private void UpdateLineRenderer()
         {
-            lineRenderer.SetPosition(0, connectedObject1.transform.position);
-            lineRenderer.SetPosition(1, connectedObject2.transform.position);
+            lineRenderer.SetPosition(0, FromNodeController.transform.position);
+            lineRenderer.SetPosition(1, ToNodeController.transform.position);
         }
     }
 }

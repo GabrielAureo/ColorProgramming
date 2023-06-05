@@ -13,7 +13,7 @@ namespace ColorProgramming
 
         public ARTouchController TouchController;
         public ContextMenuController ContextMenuController;
-        public NodeConnectController NodeConnectController;
+        public BoardController BoardController;
 
         private void OnEnable()
         {
