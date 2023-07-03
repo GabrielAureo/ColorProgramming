@@ -11,7 +11,7 @@ namespace ColorProgramming
 
         //TODO implement stages data and use it to SETBOard on BoardController
 
-        private void Awake()
+        private void Start()
         {
             GameManager.Instance.BoardController.SetBoard();
         }
@@ -22,7 +22,6 @@ namespace ColorProgramming
                 .GetCurrentBoard()
                 .IsTraversable;
 
-            Debug.Log(isTraversable);
             PlayButton.gameObject.SetActive(
                 GameManager.Instance.BoardController.GetCurrentBoard().IsTraversable
             );

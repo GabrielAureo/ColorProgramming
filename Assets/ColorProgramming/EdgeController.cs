@@ -7,8 +7,8 @@ namespace ColorProgramming
     {
         public Edge Edge;
 
-        public NodeController FromNodeController;
-        public NodeController ToNodeController;
+        public BaseNodeController FromNodeController;
+        public BaseNodeController ToNodeController;
 
         private LineRenderer lineRenderer;
 

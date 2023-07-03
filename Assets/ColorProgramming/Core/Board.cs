@@ -14,7 +14,10 @@ namespace ColorProgramming.Core
 
         private Node targetNode;
 
-        public bool IsTraversable { get; private set; }
+        public bool IsTraversable
+        {
+            get { return Path != null && Path.Count > 0; }
+        }
 
         public Board(Node sourceNode, Node targetNode)
         {
@@ -28,20 +31,30 @@ namespace ColorProgramming.Core
             };
         }
 
+        public List<Node> Path;
+
         private void TraversableUpdate()
         {
-            IsTraversable = HasPath();
+            if (HasPath(out var path))
+            {
+                Path = path;
+            }
+            else
+            {
+                Path = null;
+            }
         }
 
-        // TODO : Fix this to consider edges as bidirectional
-
-        public bool HasPath()
+        public bool HasPath(out List<Node> path)
         {
+            path = null;
+
             if (!AdjacencyList.ContainsKey(sourceNode) || !AdjacencyList.ContainsKey(targetNode))
                 return false;
 
-            HashSet<Node> visited = new HashSet<Node>();
-            Queue<Node> queue = new Queue<Node>();
+            Dictionary<Node, Node> previousNodes = new();
+            HashSet<Node> visited = new();
+            Queue<Node> queue = new();
             queue.Enqueue(sourceNode);
 
             while (queue.Count > 0)
@@ -49,7 +62,18 @@ namespace ColorProgramming.Core
                 Node currentNode = queue.Dequeue();
 
                 if (currentNode.Equals(targetNode))
+                {
+                    // Reconstruct the path from target to source
+                    path = new List<Node>();
+                    Node node = targetNode;
+                    while (node != null)
+                    {
+                        path.Add(node);
+                        node = previousNodes.ContainsKey(node) ? previousNodes[node] : null;
+                    }
+                    path.Reverse();
                     return true;
+                }
 
                 visited.Add(currentNode);
 
@@ -58,12 +82,33 @@ namespace ColorProgramming.Core
                     foreach (Edge edge in AdjacencyList[currentNode])
                     {
                         if (!visited.Contains(edge.To))
+                        {
                             queue.Enqueue(edge.To);
+                            // Set the previous node for the neighbor
+                            previousNodes[edge.To] = currentNode;
+                        }
+                    }
+                }
+
+                // Consider bidirectional edges
+                foreach (var nodeEdges in AdjacencyList)
+                {
+                    Node node = nodeEdges.Key;
+                    List<Edge> edges = nodeEdges.Value;
+
+                    foreach (Edge edge in edges)
+                    {
+                        if (edge.To.Equals(currentNode) && !visited.Contains(node))
+                        {
+                            queue.Enqueue(node);
+                            // Set the previous node for the neighbor
+                            previousNodes[node] = currentNode;
+                        }
                     }
                 }
             }
 
-            return false;
+            return false; // No path found
         }
 
         public void AddNode(Node node)
@@ -77,6 +122,7 @@ namespace ColorProgramming.Core
             CheckIfNodesPresent(from, to);
 
             var edge = new Edge(from, to);
+            CheckIfEdgeAlreadyExists(edge);
             AdjacencyList[edge.From].Add(edge);
 
             TraversableUpdate();
@@ -88,19 +134,25 @@ namespace ColorProgramming.Core
         {
             CheckIfNodesPresent(from, to);
 
-            List<Edge> edges = AdjacencyList[from];
-            Edge edgeToRemove = edges.Find(e => e.To.Equals(to));
+            Edge edgeToRemove = AdjacencyList[from].Find(e => e.To.Equals(to));
 
             if (edgeToRemove != null)
             {
-                edges.Remove(edgeToRemove);
+                AdjacencyList[from].Remove(edgeToRemove);
                 TraversableUpdate();
                 return edgeToRemove;
             }
-            else
+
+            edgeToRemove ??= AdjacencyList[to].Find(e => e.To.Equals(from));
+
+            if (edgeToRemove != null)
             {
-                throw new InvalidOperationException("Edge not found in Board");
+                AdjacencyList[to].Remove(edgeToRemove);
+                TraversableUpdate();
+                return edgeToRemove;
             }
+
+            throw new InvalidOperationException("Edge not found in Board");
         }
 
         public void RemoveNode(Node node)
@@ -128,17 +180,14 @@ namespace ColorProgramming.Core
             }
         }
 
-        private void CheckIfEdgesPresent(params Edge[] edges)
+        private void CheckIfEdgeAlreadyExists(Edge edge)
         {
-            foreach (Edge edge in edges)
+            if (
+                AdjacencyList[edge.From].Exists((e) => e.To == edge.To)
+                || AdjacencyList[edge.To].Exists((e) => e.To == edge.From)
+            )
             {
-                if (
-                    !AdjacencyList.ContainsKey(edge.From)
-                    || !AdjacencyList[edge.From].Contains(edge)
-                )
-                {
-                    throw new InvalidOperationException("Edge not found in Board");
-                }
+                throw new InvalidOperationException("Edge already exists in Board");
             }
         }
     }

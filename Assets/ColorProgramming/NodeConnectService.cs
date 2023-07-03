@@ -6,11 +6,11 @@ namespace ColorProgramming
 {
     public class NodeConnectService : ARTouchService
     {
-        private readonly NodeController targetNodeController;
+        private readonly BaseNodeController targetNodeController;
         private readonly ConnectionServiceMode mode;
 
         public NodeConnectService(
-            NodeController targetNodeController,
+            BaseNodeController targetNodeController,
             ConnectionServiceMode mode,
             bool isExclusive
         )
@@ -27,7 +27,7 @@ namespace ColorProgramming
         public override void OnTap(ARTouchData touchData)
         {
             GameManager.Instance.TouchController.TouchServiceManager.UnregisterService(this);
-            if (touchData.selectedInteractable is not NodeController controller)
+            if (touchData.selectedInteractable is not BaseNodeController controller)
                 return;
 
             if (mode == ConnectionServiceMode.CONNECT)

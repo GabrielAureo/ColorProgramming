@@ -20,9 +20,9 @@ namespace ColorProgramming
         {
             var interactable = touchData.selectedInteractable;
 
-            if (interactable is NodeController)
+            if (interactable is BaseNodeController)
             {
-                var nodeController = interactable as NodeController;
+                var nodeController = interactable as BaseNodeController;
                 var contextMenu = nodeController.GetContextMenu();
                 GameManager.Instance.ContextMenuController.SetContextMenu(contextMenu);
             }

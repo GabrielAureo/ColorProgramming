@@ -71,7 +71,7 @@ namespace ColorProgramming
                 return;
 
             Movable movable;
-            if (movablePrefab.TryGetComponent<NodeController>(out _))
+            if (movablePrefab.TryGetComponent<BaseNodeController>(out _))
             {
                 var instantiatedNode = GameManager.Instance.BoardController.AddNode(movablePrefab);
                 movable = instantiatedNode.GetComponent<Movable>();

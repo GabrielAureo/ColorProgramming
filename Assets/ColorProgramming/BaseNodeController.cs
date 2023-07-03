@@ -7,9 +7,9 @@ using UnityEngine.Events;
 
 namespace ColorProgramming
 {
-    public abstract class NodeController : MonoBehaviour, ITappable
+    public abstract class BaseNodeController : MonoBehaviour, ITappable
     {
-        public Node Node;
+        public abstract Node Node { get; set; }
 
         [SerializeField]
         protected ContextMenuData menuData;

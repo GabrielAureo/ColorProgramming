@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5823561908265429149}
+  - component: {fileID: 8119677724914253217}
   - component: {fileID: 7457584014512564024}
   - component: {fileID: 4655136999327912946}
-  - component: {fileID: 8119677724914253217}
   - component: {fileID: 7686108493538797789}
   - component: {fileID: 4211188730913297548}
   - component: {fileID: 8823928169271858360}
@@ -38,6 +38,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8119677724914253217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6600766461903925799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dae9c19e56a7e2e46917a733d164425f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuData: {fileID: 11400000, guid: 2c4caf6262053a64a8f826188a548d1c, type: 2}
+  TargetNode:
+    CurrentElement: 5
+  AccentMaterial: {fileID: 2100000, guid: 189a1562bd45ef44380e0012a4f419bc, type: 2}
 --- !u!33 &7457584014512564024
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -89,19 +105,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8119677724914253217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6600766461903925799}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dae9c19e56a7e2e46917a733d164425f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  menuData: {fileID: 11400000, guid: 2c4caf6262053a64a8f826188a548d1c, type: 2}
 --- !u!54 &7686108493538797789
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace ColorProgramming.Core
 {
+    [Serializable]
     public abstract class Node
     {
         public Guid Id { get; private set; }
