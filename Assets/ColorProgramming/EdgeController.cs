@@ -12,9 +12,17 @@ namespace ColorProgramming
 
         private LineRenderer lineRenderer;
 
+        [SerializeField]
+        private Material normalMaterial;
+
+        [SerializeField]
+        private Material loopMaterial;
+
         void Start()
         {
             lineRenderer = GetComponent<LineRenderer>();
+            var material = Edge.IsLoop ? loopMaterial : normalMaterial;
+            lineRenderer.material = material;
         }
 
         void Update()

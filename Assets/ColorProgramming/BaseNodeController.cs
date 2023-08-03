@@ -1,5 +1,6 @@
 ﻿using ColorProgramming.Core;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace ColorProgramming
     public abstract class BaseNodeController : MonoBehaviour, ITappable
     {
         public abstract Node Node { get; set; }
+        protected virtual Dictionary<string, UnityAction> ActionSignalMap =>
+            new() { { "connect", ConnectAction }, { "disconnect", DisconnectAction }, };
 
         [SerializeField]
         protected ContextMenuData menuData;
@@ -27,7 +30,6 @@ namespace ColorProgramming
                             Action = ParseActionSignal(action.ActionSignal)
                         };
 
-                        Debug.Log(runtimeAction);
                         return runtimeAction;
                     }
                 )
@@ -39,26 +41,26 @@ namespace ColorProgramming
             };
         }
 
-        protected UnityAction ParseActionSignal(string actionSignal)
+        protected void ConnectAction()
         {
-            return actionSignal switch
-            {
-                "connect"
-                    => () =>
-                        GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
-                            new NodeConnectService(this, Enums.ConnectionServiceMode.CONNECT, true)
-                        ),
-                "disconnect"
-                    => () =>
-                        GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
-                            new NodeConnectService(
-                                this,
-                                Enums.ConnectionServiceMode.DISCONNECT,
-                                true
-                            )
-                        ),
-                _ => () => { },
-            };
+            GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                new NodeConnectService(this, Enums.ConnectionServiceMode.CONNECT, true)
+            );
+        }
+
+        protected void DisconnectAction()
+        {
+            GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
+                new NodeConnectService(this, Enums.ConnectionServiceMode.DISCONNECT, true)
+            );
+        }
+
+        private UnityAction ParseActionSignal(string actionSignal)
+        {
+            if (ActionSignalMap.TryGetValue(actionSignal, out var action))
+                return action;
+            else
+                return () => { };
         }
     }
 }

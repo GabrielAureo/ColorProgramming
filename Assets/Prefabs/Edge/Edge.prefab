@@ -146,3 +146,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FromNodeController: {fileID: 0}
   ToNodeController: {fileID: 0}
+  normalMaterial: {fileID: 2100000, guid: 2111418b99c68ec4fb1e73a3dc0e6294, type: 2}
+  loopMaterial: {fileID: 2100000, guid: 06ab9b536f3e4a44ea935b99b5c3e8da, type: 2}

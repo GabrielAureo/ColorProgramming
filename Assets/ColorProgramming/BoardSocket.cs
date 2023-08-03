@@ -12,7 +12,7 @@ namespace ColorProgramming
 
         public void OnPlace(ARTouchData touchData, Movable movable)
         {
-            movable.transform.localPosition = touchData.hit.point;
+            movable.transform.localPosition = touchData.hit.point - movable.bottomAnchor;
             movable.transform.rotation = Quaternion.identity;
             OnMovablesPlace.Invoke(new Movable[] { movable });
         }

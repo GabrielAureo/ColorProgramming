@@ -11,6 +11,7 @@ namespace ColorProgramming.Core
         public Node From { get; private set; }
         public Node To { get; private set; }
         public Guid Id { get; private set; }
+        public bool IsLoop { get; set; }
 
         public Edge(Node from, Node to)
         {

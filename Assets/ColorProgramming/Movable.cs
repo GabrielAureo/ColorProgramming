@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,6 +17,8 @@ namespace ColorProgramming
         public Mesh mesh;
         public UnityAction<IARInteractable, IARInteractable> releaseAction;
 
+        public Pose LastPose { get; private set; }
+
         void Awake()
         {
             rigidBody = GetComponent<Rigidbody>();
@@ -26,6 +29,16 @@ namespace ColorProgramming
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(transform.position + bottomAnchor, new Vector3(3, 0, 3));
+        }
+
+        public void OnTake()
+        {
+            LastPose = new Pose(transform.position, transform.rotation);
+        }
+
+        public void SetPose(Pose pose)
+        {
+            transform.SetPositionAndRotation(pose.position, pose.rotation);
         }
     }
 }

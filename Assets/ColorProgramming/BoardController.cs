@@ -7,13 +7,14 @@ namespace ColorProgramming
 {
     public class BoardController : MonoBehaviour
     {
-        private BoardSocket boardSocket;
         private Board board;
 
         private readonly List<EdgeController> edgeControllers = new();
         private readonly List<BaseNodeController> nodeControllers = new();
         private AgentController player;
         private TargetNodeController target;
+
+        private LoopNode loopNodeScope;
 
         [Header("Prefabs")]
         public GameObject edgePrefab;
@@ -42,6 +43,11 @@ namespace ColorProgramming
                 .ToList();
 
             player.WalkGraph(controllers);
+        }
+
+        public void ToggleLoopBuildMode(LoopNode loopNode)
+        {
+            loopNodeScope = loopNodeScope != null ? null : loopNode;
         }
 
         public void SetBoard()
@@ -90,7 +96,7 @@ namespace ColorProgramming
 
         public void ConnectNodes(BaseNodeController from, BaseNodeController to)
         {
-            var edge = board.ConnectNodes(from.Node, to.Node);
+            var edge = CreateEdge(to, from);
             var edgeObj = Instantiate(edgePrefab);
             var edgeController = edgeObj.GetComponent<EdgeController>();
             edgeController.FromNodeController = from;
@@ -106,6 +112,13 @@ namespace ColorProgramming
 
             var edgeObj = edgeControllers.FirstOrDefault((e) => e.Edge == removed);
             Destroy(edgeObj.gameObject);
+        }
+
+        private Edge CreateEdge(BaseNodeController from, BaseNodeController to)
+        {
+            return loopNodeScope != null
+                ? board.ConnectLoop(from.Node, to.Node, loopNodeScope)
+                : board.ConnectNodes(from.Node, to.Node);
         }
     }
 }

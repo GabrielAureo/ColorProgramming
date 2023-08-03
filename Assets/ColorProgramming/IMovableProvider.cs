@@ -7,8 +7,7 @@ namespace ColorProgramming
 {
     public interface IMovableProvider : IHoldable
     {
-        public bool ShouldTake();
-        public Movable GetMovable(ARTouchData touchData);
-        public void OnInvalidDrop();
+        public Movable TakeMovable(ARTouchData touchData);
+        public void ReturnToOrigin();
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ColorProgramming
@@ -6,8 +8,9 @@ namespace ColorProgramming
     {
         public Movable currentMovable;
         public bool isHolding;
-        private HingeJoint hinge;
+        private readonly HingeJoint hinge;
         public Transform previewer;
+        private Action returnToOrigin;
 
         public MovableService(HingeJoint hinge)
             : base(false)
@@ -34,14 +37,12 @@ namespace ColorProgramming
             var provider = touchData.selectedInteractable as IMovableProvider;
             isHolding = true;
 
-            if (!provider.ShouldTake())
-                return;
-
-            var takenMovable = provider.GetMovable(touchData);
+            var takenMovable = provider.TakeMovable(touchData);
             if (takenMovable)
             {
                 currentMovable = takenMovable;
                 ConnectToHinge(takenMovable);
+                returnToOrigin = provider.ReturnToOrigin;
             }
         }
 
@@ -56,7 +57,7 @@ namespace ColorProgramming
             if (touchData.lastStatus != ARTouchData.Status.HOLDING)
                 return;
 
-            if (currentMovable is null)
+            if (currentMovable == null)
                 return;
 
             IMovableReceiver target = null;
@@ -73,18 +74,24 @@ namespace ColorProgramming
                 }
             }
 
-            if (target == null)
+            if (target == null || !target.ShouldPlace(currentMovable))
+            {
+                returnToOrigin?.Invoke();
+                CleanupRelease();
                 return;
-
-            if (!target.ShouldPlace(currentMovable))
-                return;
+            }
 
             target.OnPlace(touchData, currentMovable);
+            CleanupRelease();
+        }
 
+        private void CleanupRelease()
+        {
             hinge.connectedBody = null;
             currentMovable.rigidBody.isKinematic = true;
             isHolding = false;
             currentMovable = null;
+            returnToOrigin = null;
         }
 
         public void ConnectToHinge(Movable movable)

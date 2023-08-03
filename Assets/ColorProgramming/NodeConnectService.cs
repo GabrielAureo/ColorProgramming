@@ -1,6 +1,9 @@
 ﻿using ColorProgramming.Core;
 using ColorProgramming.Enums;
+using DG.Tweening;
 using System.Diagnostics;
+using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace ColorProgramming
 {

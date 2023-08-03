@@ -9,19 +9,15 @@ namespace ColorProgramming
         [SerializeField]
         private Movable movable;
 
-        public Movable GetMovable(ARTouchData touchData)
+        public Movable TakeMovable(ARTouchData touchData)
         {
+            movable.OnTake();
             return movable;
         }
 
-        public void OnInvalidDrop()
+        public void ReturnToOrigin()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public bool ShouldTake()
-        {
-            return true;
+            movable.SetPose(movable.LastPose);
         }
     }
 }

@@ -6,13 +6,16 @@ using System.Linq;
 
 namespace ColorProgramming.Core
 {
+    public class AdjacencyList : Dictionary<Node, List<Edge>>
+    {
+        public Node SourceNode { get; set; }
+        public Node TargetNode { get; set; }
+    }
+
     public class Board
     {
-        public Dictionary<Node, List<Edge>> AdjacencyList { get; private set; }
-
-        private Node sourceNode;
-
-        private Node targetNode;
+        public AdjacencyList AdjacencyList { get; private set; }
+        public Dictionary<LoopNode, AdjacencyList> LoopBodies { get; private set; }
 
         public bool IsTraversable
         {
@@ -21,14 +24,15 @@ namespace ColorProgramming.Core
 
         public Board(Node sourceNode, Node targetNode)
         {
-            this.sourceNode = sourceNode;
-            this.targetNode = targetNode;
-
-            AdjacencyList = new Dictionary<Node, List<Edge>>()
+            AdjacencyList = new AdjacencyList()
             {
                 { sourceNode, new List<Edge>() },
                 { targetNode, new List<Edge>() },
             };
+            AdjacencyList.SourceNode = sourceNode;
+            AdjacencyList.TargetNode = targetNode;
+
+            LoopBodies = new();
         }
 
         public List<Node> Path;
@@ -47,39 +51,72 @@ namespace ColorProgramming.Core
 
         public bool HasPath(out List<Node> path)
         {
-            path = null;
+            var rootPath = BuildPath(AdjacencyList);
 
-            if (!AdjacencyList.ContainsKey(sourceNode) || !AdjacencyList.ContainsKey(targetNode))
+            if (rootPath == null)
+            {
+                path = null;
                 return false;
+            }
 
+            var flattenedPath = new List<Node>();
+
+            foreach (var node in rootPath)
+            {
+                if (node is LoopNode loopNode)
+                {
+                    var loopBody = BuildPath(LoopBodies[loopNode]);
+                    loopBody = Enumerable
+                        .Repeat(loopBody, loopNode.TotalLoops)
+                        .SelectMany(x => x)
+                        .ToList();
+                    // Add loop node to beginning and end of list
+                    loopBody.Insert(0, loopNode);
+                    loopBody.Add(node);
+                    flattenedPath.AddRange(loopBody);
+                }
+                else
+                {
+                    flattenedPath.Add(node);
+                }
+            }
+
+            flattenedPath.Reverse();
+            path = flattenedPath;
+
+            return path.Count > 0;
+        }
+
+        public List<Node> BuildPath(AdjacencyList adjacencyList)
+        {
             Dictionary<Node, Node> previousNodes = new();
             HashSet<Node> visited = new();
             Queue<Node> queue = new();
-            queue.Enqueue(sourceNode);
+            queue.Enqueue(adjacencyList.SourceNode);
 
             while (queue.Count > 0)
             {
                 Node currentNode = queue.Dequeue();
 
-                if (currentNode.Equals(targetNode))
+                if (currentNode.Equals(adjacencyList.TargetNode))
                 {
                     // Reconstruct the path from target to source
-                    path = new List<Node>();
-                    Node node = targetNode;
+                    List<Node> path = new();
+                    Node node = adjacencyList.TargetNode;
                     while (node != null)
                     {
                         path.Add(node);
                         node = previousNodes.ContainsKey(node) ? previousNodes[node] : null;
                     }
-                    path.Reverse();
-                    return true;
+
+                    return path;
                 }
 
                 visited.Add(currentNode);
 
-                if (AdjacencyList.ContainsKey(currentNode))
+                if (adjacencyList.ContainsKey(currentNode))
                 {
-                    foreach (Edge edge in AdjacencyList[currentNode])
+                    foreach (Edge edge in adjacencyList[currentNode])
                     {
                         if (!visited.Contains(edge.To))
                         {
@@ -91,7 +128,7 @@ namespace ColorProgramming.Core
                 }
 
                 // Consider bidirectional edges
-                foreach (var nodeEdges in AdjacencyList)
+                foreach (var nodeEdges in adjacencyList)
                 {
                     Node node = nodeEdges.Key;
                     List<Edge> edges = nodeEdges.Value;
@@ -108,7 +145,7 @@ namespace ColorProgramming.Core
                 }
             }
 
-            return false; // No path found
+            return null; // No path found
         }
 
         public void AddNode(Node node)
@@ -119,12 +156,55 @@ namespace ColorProgramming.Core
 
         public Edge ConnectNodes(Node from, Node to)
         {
+            return Connect(from, to, AdjacencyList);
+        }
+
+        public Edge ConnectLoop(Node from, Node to, LoopNode scope)
+        {
+            if (!LoopBodies.ContainsKey(scope))
+            {
+                LoopBodies[scope] = new AdjacencyList();
+            }
+            var edge = Connect(from, to, LoopBodies[scope]);
+            edge.IsLoop = true;
+
+            Node inOutLoopNode = null;
+
+            if (edge.To == scope)
+            {
+                inOutLoopNode = edge.From;
+            }
+            else if (edge.From == scope)
+            {
+                inOutLoopNode = edge.To;
+            }
+
+            if (inOutLoopNode != null)
+            {
+                if (LoopBodies[scope].SourceNode == null)
+                {
+                    LoopBodies[scope].SourceNode = inOutLoopNode;
+                }
+                else if (LoopBodies[scope].TargetNode == null)
+                {
+                    LoopBodies[scope].TargetNode = inOutLoopNode;
+                }
+            }
+
+            return edge;
+        }
+
+        private Edge Connect(Node from, Node to, Dictionary<Node, List<Edge>> adjacencyList)
+        {
             CheckIfNodesPresent(from, to);
 
             var edge = new Edge(from, to);
-            CheckIfEdgeAlreadyExists(edge);
-            AdjacencyList[edge.From].Add(edge);
+            CheckIfEdgeAlreadyExists(edge, adjacencyList);
 
+            if (!adjacencyList.ContainsKey(edge.From))
+                adjacencyList[edge.From] = new List<Edge>();
+
+            adjacencyList[edge.From].Add(edge);
             TraversableUpdate();
 
             return edge;
@@ -180,14 +260,22 @@ namespace ColorProgramming.Core
             }
         }
 
-        private void CheckIfEdgeAlreadyExists(Edge edge)
+        private void CheckIfEdgeAlreadyExists(Edge edge, Dictionary<Node, List<Edge>> adjacencyList)
         {
-            if (
-                AdjacencyList[edge.From].Exists((e) => e.To == edge.To)
-                || AdjacencyList[edge.To].Exists((e) => e.To == edge.From)
-            )
+            if (adjacencyList.TryGetValue(edge.From, out var fromEdges))
             {
-                throw new InvalidOperationException("Edge already exists in Board");
+                if (fromEdges.Exists((e) => e.To == edge.To))
+                {
+                    throw new InvalidOperationException("Edge already exists in the Board");
+                }
+            }
+
+            if (adjacencyList.TryGetValue(edge.To, out var toEdges))
+            {
+                if (toEdges.Exists((e) => e.To == edge.From))
+                {
+                    throw new InvalidOperationException("Edge already exists in the Board");
+                }
             }
         }
     }
