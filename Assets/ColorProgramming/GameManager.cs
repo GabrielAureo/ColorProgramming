@@ -14,6 +14,8 @@ namespace ColorProgramming
         public ARTouchController TouchController;
         public ContextMenuController ContextMenuController;
         public BoardController BoardController;
+        public InventoryController InventoryController;
+        public NodePrefabCollection NodePrefabCollection;
 
         private void OnEnable()
         {

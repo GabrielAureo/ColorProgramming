@@ -15,6 +15,7 @@ namespace ColorProgramming
         [SerializeField]
         private GameObject batteryPrefab;
 
+        [SerializeField]
         private Transform spawnedBatteries;
 
         public bool IsLoopClosed { get; private set; }
@@ -36,16 +37,6 @@ namespace ColorProgramming
             )
             {
                 return;
-            }
-            if (spawnedBatteries == null)
-            {
-                var spawnObj = new GameObject("Spawned batteries");
-                spawnedBatteries = Instantiate(
-                    spawnObj.transform,
-                    transform.position + (Vector3.up * -0.7f),
-                    Quaternion.identity,
-                    transform
-                );
             }
             foreach (Transform child in spawnedBatteries)
             {
@@ -77,11 +68,6 @@ namespace ColorProgramming
         private void StartBuildMode()
         {
             GameManager.Instance.BoardController.ToggleLoopBuildMode(ConcreteNode);
-        }
-
-        public override void Evaluate(AgentController playerNodeController)
-        {
-            return;
         }
     }
 }

@@ -9,6 +9,9 @@ namespace ColorProgramming
         [SerializeField]
         private Button PlayButton;
 
+        [SerializeField]
+        private Button CloseButton;
+
         //TODO implement stages data and use it to SETBOard on BoardController
 
         private void Start()
@@ -18,13 +21,11 @@ namespace ColorProgramming
 
         private void Update()
         {
-            var isTraversable = GameManager.Instance.BoardController
-                .GetCurrentBoard()
-                .IsTraversable;
-
             PlayButton.gameObject.SetActive(
                 GameManager.Instance.BoardController.GetCurrentBoard().IsTraversable
             );
+
+            CloseButton.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
         }
     }
 }

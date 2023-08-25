@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ColorProgramming
 {
@@ -29,6 +30,7 @@ namespace ColorProgramming
             EnableMenu(true);
             foreach (var action in menu.data)
             {
+                action.Action += () => EnableMenu(false);
                 var buttonObject = Instantiate(buttonPrefab, buttonsContainer);
                 var contextButton = buttonObject.GetComponent<ContextButton>();
                 contextButton.SetupButton(action);

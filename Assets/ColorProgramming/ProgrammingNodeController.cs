@@ -2,8 +2,5 @@
 
 namespace ColorProgramming
 {
-    public abstract class ProgrammingNodeController : BaseNodeController
-    {
-        public abstract void Evaluate(AgentController playerNodeController);
-    }
+    public abstract class ProgrammingNodeController : BaseNodeController { }
 }

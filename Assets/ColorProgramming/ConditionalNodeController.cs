@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ColorProgramming
 {
-    public class ConditionalNodeController : ConcreteNodeController<ConditionalNode>
+    public class ConditionalNodeController : ConcreteNodeController<ConditionalNode>, IEvaluatable
     {
         [SerializeField]
         private Renderer TrueElementRenderer;
@@ -17,7 +17,7 @@ namespace ColorProgramming
 
         private ElementsData elementsData;
 
-        public override void Evaluate(AgentController playerController)
+        public void Evaluate(AgentController playerController)
         {
             var newElement =
                 playerController.AgentNode.CurrentElement == ConcreteNode.CheckedElement

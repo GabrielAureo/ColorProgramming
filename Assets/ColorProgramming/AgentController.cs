@@ -51,9 +51,9 @@ namespace ColorProgramming
                     yield return null;
                 }
 
-                if (nodeController is ProgrammingNodeController programmingNodeController)
+                if (nodeController is IEvaluatable evaluatableController)
                 {
-                    programmingNodeController.Evaluate(this);
+                    evaluatableController.Evaluate(this);
                 }
             }
         }

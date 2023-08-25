@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 5925774539233011973}
   - component: {fileID: 5925774539233011971}
   - component: {fileID: 5925774539233011970}
-  - component: {fileID: 24093545512490752}
+  - component: {fileID: 1777466161451015953}
   m_Layer: 5
   m_Name: Inventory Item
   m_TagString: Untagged
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &24093545512490752
+--- !u!114 &1777466161451015953
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -413,11 +413,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5925774539233011972}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7a5609b723507246a388fa390275ca3, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e77ffdf88f875d40b447adbde4843bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movablePrefab: {fileID: 2759456722120366627, guid: 23fdebec8275a6e46905d18863e2e569,
-    type: 3}
-  itemQuantity: 1
+  Item:
+    NodeGameObject: {fileID: 7113340030390268476, guid: 75a32d1ef433c02408b259d57acf6a2a,
+      type: 3}
+    ItemQuantity: 1
   itemCountGUI: {fileID: 2154916272705212110}
   loadingRing: {fileID: 5492814357228919805}

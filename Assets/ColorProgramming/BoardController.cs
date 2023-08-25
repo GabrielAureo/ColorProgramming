@@ -1,4 +1,5 @@
 ﻿using ColorProgramming.Core;
+using ColorProgramming.Items;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,8 +10,10 @@ namespace ColorProgramming
     {
         private Board board;
 
-        private readonly List<EdgeController> edgeControllers = new();
-        private readonly List<BaseNodeController> nodeControllers = new();
+        private BoardScope globalScope;
+        private Dictionary<CapsuleNode, BoardScope> scopes;
+        private BoardScope currentScope;
+
         private AgentController player;
         private TargetNodeController target;
 
@@ -19,12 +22,14 @@ namespace ColorProgramming
         [Header("Prefabs")]
         public GameObject edgePrefab;
 
+        public bool isGlobalScope;
+
         public void WalkGraph()
         {
             if (!board.IsTraversable)
                 return;
 
-            var controllers = nodeControllers
+            var controllers = globalScope.NodeControllers
                 .Select((controller, index) => new { Controller = controller, Index = index })
                 .Join(
                     board.Path.Select((node, index) => new { Node = node, Index = index }),
@@ -62,12 +67,17 @@ namespace ColorProgramming
 
             board = new Board(player.Node, target.Node);
 
+            globalScope = new BoardScope();
+            currentScope = globalScope;
+            scopes = new();
+
             foreach (var node in initialNodes)
             {
                 AddNode(node);
             }
             AddNode(player);
             AddNode(target);
+            isGlobalScope = true;
         }
 
         public Board GetCurrentBoard()
@@ -81,7 +91,7 @@ namespace ColorProgramming
             if (nodeObj.TryGetComponent<BaseNodeController>(out var nodeController))
             {
                 board.AddNode(nodeController.Node);
-                nodeControllers.Add(nodeController);
+                currentScope.NodeControllers.Add(nodeController);
             }
 
             return nodeController;
@@ -90,7 +100,7 @@ namespace ColorProgramming
         public BaseNodeController AddNode(BaseNodeController instantiatedNodeController)
         {
             board.AddNode(instantiatedNodeController.Node);
-            nodeControllers.Add(instantiatedNodeController);
+            currentScope.NodeControllers.Add(instantiatedNodeController);
             return instantiatedNodeController;
         }
 
@@ -103,14 +113,14 @@ namespace ColorProgramming
             edgeController.ToNodeController = to;
             edgeController.Edge = edge;
 
-            edgeControllers.Add(edgeController);
+            currentScope.EdgeControllers.Add(edgeController);
         }
 
         public void DisconnectNodes(BaseNodeController node, BaseNodeController other)
         {
             var removed = board.RemoveConnection(node.Node, other.Node);
 
-            var edgeObj = edgeControllers.FirstOrDefault((e) => e.Edge == removed);
+            var edgeObj = currentScope.EdgeControllers.FirstOrDefault((e) => e.Edge == removed);
             Destroy(edgeObj.gameObject);
         }
 
@@ -119,6 +129,92 @@ namespace ColorProgramming
             return loopNodeScope != null
                 ? board.ConnectLoop(from.Node, to.Node, loopNodeScope)
                 : board.ConnectNodes(from.Node, to.Node);
+        }
+
+        public void SetScope()
+        {
+            currentScope.HideScope();
+            currentScope = globalScope;
+            currentScope.ShowScope();
+            isGlobalScope = true;
+
+            GameManager.Instance.InventoryController.ClearTemporaryItems();
+        }
+
+        public void SetScope(CapsuleNode capsuleScope)
+        {
+            if (!scopes.TryGetValue(capsuleScope, out var scope))
+            {
+                scope = new BoardScope();
+                scopes.Add(capsuleScope, scope);
+            }
+
+            currentScope.HideScope();
+            currentScope = scope;
+            currentScope.ShowScope();
+            isGlobalScope = false;
+
+            var newItems = EvaluateScopeItems(capsuleScope);
+
+            GameManager.Instance.InventoryController.AddTemporaryItems(newItems);
+        }
+
+        private List<Item> EvaluateScopeItems(CapsuleNode capsuleScope)
+        {
+            GameObject inputNodePrefab = GameManager.Instance.NodePrefabCollection.Data[
+                "InputNode"
+            ];
+            GameObject outputNodePrefab = GameManager.Instance.NodePrefabCollection.Data[
+                "OutputNode"
+            ];
+
+            List<Item> result = new();
+
+            var hasAdjacencyList = board.ScopeBodies.TryGetValue(
+                capsuleScope,
+                out var scopeAdjacencyList
+            );
+
+            if (!hasAdjacencyList)
+            {
+                return new List<Item>()
+                {
+                    new ConcreteItem<InputNode>()
+                    {
+                        NodeGameObject = inputNodePrefab,
+                        ItemQuantity = 1
+                    },
+                    new ConcreteItem<OutputNode>()
+                    {
+                        NodeGameObject = outputNodePrefab,
+                        ItemQuantity = 1
+                    }
+                };
+            }
+
+            if (scopeAdjacencyList.SourceNode == null)
+            {
+                result.Add(
+                    new ConcreteItem<InputNode>()
+                    {
+                        NodeGameObject = inputNodePrefab,
+                        ItemQuantity = 1
+                    }
+                );
+            }
+
+            if (scopeAdjacencyList.TargetNode == null)
+            {
+                result.Add(
+                    new ConcreteItem<OutputNode>()
+                    {
+                        NodeGameObject = outputNodePrefab,
+                        ItemQuantity = 1
+                    }
+                );
+            }
+
+            return result;
         }
     }
 }

@@ -17,6 +17,8 @@ namespace ColorProgramming.Core
         public AdjacencyList AdjacencyList { get; private set; }
         public Dictionary<LoopNode, AdjacencyList> LoopBodies { get; private set; }
 
+        public Dictionary<CapsuleNode, AdjacencyList> ScopeBodies { get; private set; }
+
         public bool IsTraversable
         {
             get { return Path != null && Path.Count > 0; }
@@ -33,6 +35,7 @@ namespace ColorProgramming.Core
             AdjacencyList.TargetNode = targetNode;
 
             LoopBodies = new();
+            ScopeBodies = new();
         }
 
         public List<Node> Path;
