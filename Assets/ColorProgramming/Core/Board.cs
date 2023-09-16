@@ -68,15 +68,18 @@ namespace ColorProgramming.Core
             {
                 if (node is LoopNode loopNode)
                 {
-                    var loopBody = BuildPath(LoopBodies[loopNode]);
-                    loopBody = Enumerable
-                        .Repeat(loopBody, loopNode.TotalLoops)
+                    if(LoopBodies.TryGetValue(loopNode, out var loopBody)){
+
+                        var loopPath = BuildPath(loopBody);
+                        loopPath = Enumerable
+                        .Repeat(loopPath, loopNode.TotalLoops)
                         .SelectMany(x => x)
                         .ToList();
-                    // Add loop node to beginning and end of list
-                    loopBody.Insert(0, loopNode);
-                    loopBody.Add(node);
-                    flattenedPath.AddRange(loopBody);
+                        // Add loop node to beginning and end of list
+                        loopPath.Insert(0, loopNode);
+                        loopPath.Add(node);
+                        flattenedPath.AddRange(loopPath);
+                    }
                 }
                 else
                 {
@@ -151,14 +154,33 @@ namespace ColorProgramming.Core
             return null; // No path found
         }
 
-        public void AddNode(Node node)
+        public void AddNode(Node node, CapsuleNode scope = null)
         {
-            if (!AdjacencyList.ContainsKey(node))
-                AdjacencyList[node] = new List<Edge>();
+            AdjacencyList adjacencyList = AdjacencyList;
+            if (scope != null)
+            {
+                adjacencyList = FindOrCreateScope(scope);
+
+                if(node is InputNode)
+                {
+                    adjacencyList.SourceNode = node;
+                }
+                if(node is OutputNode)
+                {
+                    adjacencyList.TargetNode = node;
+                }
+            }
+            if (!adjacencyList.ContainsKey(node))
+                adjacencyList[node] = new List<Edge>();
         }
 
-        public Edge ConnectNodes(Node from, Node to)
+        public Edge ConnectNodes(Node from, Node to, CapsuleNode scope = null)
         {
+            if (scope != null)
+            {
+                var capsuleScope = FindOrCreateScope(scope);
+                return Connect(from, to, capsuleScope);
+            }
             return Connect(from, to, AdjacencyList);
         }
 
@@ -197,9 +219,9 @@ namespace ColorProgramming.Core
             return edge;
         }
 
-        private Edge Connect(Node from, Node to, Dictionary<Node, List<Edge>> adjacencyList)
+        private Edge Connect(Node from, Node to, AdjacencyList adjacencyList)
         {
-            CheckIfNodesPresent(from, to);
+            CheckIfNodesPresent(adjacencyList, from, to);
 
             var edge = new Edge(from, to);
             CheckIfEdgeAlreadyExists(edge, adjacencyList);
@@ -213,9 +235,18 @@ namespace ColorProgramming.Core
             return edge;
         }
 
-        public Edge RemoveConnection(Node from, Node to)
+        public Edge RemoveConnection(Node from, Node to, CapsuleNode scope = null)
         {
-            CheckIfNodesPresent(from, to);
+            if(scope != null)
+            {
+                return RemoveEdge(from, to, ScopeBodies[scope]);
+            }
+            return RemoveEdge(from, to, AdjacencyList);
+        }
+
+        private Edge RemoveEdge(Node from, Node to, AdjacencyList adjacencyList)
+        {
+            CheckIfNodesPresent(adjacencyList, from, to);
 
             Edge edgeToRemove = AdjacencyList[from].Find(e => e.To.Equals(to));
 
@@ -238,9 +269,9 @@ namespace ColorProgramming.Core
             throw new InvalidOperationException("Edge not found in Board");
         }
 
-        public void RemoveNode(Node node)
+        public void RemoveNode(Node node, AdjacencyList adjacencyList)
         {
-            CheckIfNodesPresent(node);
+            CheckIfNodesPresent(adjacencyList, node);
             List<Edge> edgesToRemove = AdjacencyList[node];
             foreach (Edge edge in edgesToRemove)
             {
@@ -252,11 +283,21 @@ namespace ColorProgramming.Core
             TraversableUpdate();
         }
 
-        private void CheckIfNodesPresent(params Node[] nodes)
+        private AdjacencyList FindOrCreateScope(CapsuleNode scope)
+        {
+            if (!ScopeBodies.TryGetValue(scope, out var capsuleScope))
+            {
+                ScopeBodies[scope] = new AdjacencyList();
+                capsuleScope = ScopeBodies[scope];
+            }
+            return capsuleScope;
+        }
+
+        private void CheckIfNodesPresent(AdjacencyList adjacencyList, params Node[] nodes)
         {
             foreach (Node node in nodes)
             {
-                if (!AdjacencyList.ContainsKey(node))
+                if (!adjacencyList.ContainsKey(node))
                 {
                     throw new InvalidOperationException("Node not in Board");
                 }

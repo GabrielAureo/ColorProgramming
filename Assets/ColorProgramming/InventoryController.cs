@@ -1,17 +1,12 @@
 ﻿using ColorProgramming.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ColorProgramming
 {
     public class InventoryController : MonoBehaviour
     {
-        private readonly List<Item> Items = new();
-        private readonly List<Item> TemporaryItems = new();
+        private ItemController[] items;
+        private ItemController[] temporaryItems;
 
         [SerializeField]
         private Transform inventoryContent;
@@ -19,15 +14,20 @@ namespace ColorProgramming
         [SerializeField]
         private GameObject itemPrefab;
 
-        public void AddTemporaryItems(List<Item> newItems)
+        private void Awake()
         {
-            TemporaryItems.AddRange(newItems);
+            items = inventoryContent.GetComponentsInChildren<ItemController>();
+        }
+
+        public void SetTemporaryItems(ItemController[] newItems)
+        {
+            temporaryItems = newItems;
             RefreshInventory();
         }
 
         public void ClearTemporaryItems()
         {
-            TemporaryItems.Clear();
+            temporaryItems = new ItemController[] {};
             RefreshInventory();
         }
 
@@ -35,7 +35,10 @@ namespace ColorProgramming
         {
             foreach (Transform child in inventoryContent)
             {
-                Destroy(child.gameObject);
+                if(child.CompareTag("Temporary"))
+                {
+                    Destroy(child.gameObject);
+                }
             }
 
             SpawnControllers();
@@ -43,13 +46,10 @@ namespace ColorProgramming
 
         private void SpawnControllers()
         {
-            var unionItems = Items.Concat(TemporaryItems);
-            foreach (var item in unionItems)
+            foreach (var item in temporaryItems)
             {
-                var itemObj = Instantiate(itemPrefab, inventoryContent);
-                var itemController = itemObj.GetComponent<ItemController>();
-
-                itemController.Item = item;
+                var obj = Instantiate(item.gameObject, inventoryContent);
+                obj.tag = "Temporary";
             }
         }
     }

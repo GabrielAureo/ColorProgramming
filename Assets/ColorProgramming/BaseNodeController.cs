@@ -10,6 +10,7 @@ namespace ColorProgramming
 {
     public abstract class BaseNodeController : MonoBehaviour, ITappable
     {
+        [SerializeField]
         public abstract Node Node { get; set; }
         protected virtual Dictionary<string, UnityAction> ActionSignalMap =>
             new() { { "connect", ConnectAction }, { "disconnect", DisconnectAction }, };
@@ -62,5 +63,7 @@ namespace ColorProgramming
             else
                 return () => { };
         }
+
+        public virtual void OnAgentTouch() { }
     }
 }

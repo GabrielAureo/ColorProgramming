@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace ColorProgramming
 {
-    public class InputNodeController : ConcreteNodeController<OutputNode> { }
+    public class InputNodeController : ConcreteNodeController<InputNode> { }
 }

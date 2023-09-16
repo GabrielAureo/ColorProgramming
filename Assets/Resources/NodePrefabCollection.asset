@@ -15,8 +15,8 @@ MonoBehaviour:
   Data:
     _serializedList:
     - Key: InputNode
-      Value: {fileID: 5108438427754121509, guid: 523092a9f6516e543aa798860ec51b5c,
+      Value: {fileID: 4769259976831254365, guid: 4ca18057526074fc69f1848c75b3ee38,
         type: 3}
     - Key: OutputNode
-      Value: {fileID: 5108438427754121509, guid: 6020ffb9a34cfe14c8cf9debae215962,
+      Value: {fileID: 7048181919910659788, guid: 2b947726edf604610854d783c7cf3c7d,
         type: 3}

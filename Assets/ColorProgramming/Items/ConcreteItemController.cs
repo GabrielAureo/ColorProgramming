@@ -7,7 +7,7 @@ using UnityEngine;
 namespace AssetsolorProgramming.Items
 {
     [Serializable]
-    public class ConcreteItemController<T> : ItemController
+    public abstract class ConcreteItemController<T> : ItemController
         where T : Node
     {
         public ConcreteItem<T> ConcreteItem;
@@ -18,12 +18,12 @@ namespace AssetsolorProgramming.Items
             set => ConcreteItem = (ConcreteItem<T>)value;
         }
 
-        protected override void SetupItem(Movable movable)
+        protected override void SetupNode(BaseNodeController nodeController)
         {
-            if (movable.TryGetComponent<BaseNodeController>(out var nodeController))
-            {
-                nodeController.Node = ConcreteItem.ConcreteNode;
-            }
+            var concreteNode = (T)nodeController.Node;
+            SetupConcreteNode(concreteNode);
         }
+
+        protected abstract void SetupConcreteNode(T concreteNode);
     }
 }

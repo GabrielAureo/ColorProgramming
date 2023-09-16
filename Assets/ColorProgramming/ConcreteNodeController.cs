@@ -12,6 +12,7 @@ namespace ColorProgramming
         {
             get => ConcreteNode;
             set => ConcreteNode = (T)value;
+
         }
     }
 }

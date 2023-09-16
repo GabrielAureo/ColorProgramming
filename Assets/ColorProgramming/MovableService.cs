@@ -32,6 +32,10 @@ namespace ColorProgramming
 
         private void Grab(ARTouchData touchData)
         {
+            if(currentMovable != null)
+            {
+                return;
+            }
             if (touchData.selectedInteractable is not IMovableProvider)
                 return;
             var provider = touchData.selectedInteractable as IMovableProvider;

@@ -8,5 +8,11 @@ using System.Threading.Tasks;
 
 namespace ColorProgramming.Items
 {
-    public class InputNodeItemController : ConcreteItemController<InputNode> { }
+    public class InputNodeItemController : ConcreteItemController<InputNode>
+    {
+        protected override void SetupConcreteNode(InputNode concreteNode)
+        {
+           
+        }
+    }
 }

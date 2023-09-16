@@ -1,9 +1,5 @@
 ﻿using AYellowpaper.SerializedCollections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ColorProgramming.Items;
 using UnityEngine;
 
 namespace ColorProgramming
@@ -15,6 +11,6 @@ namespace ColorProgramming
     public class NodePrefabCollection : ScriptableObject
     {
         [SerializedDictionary("Node Name", "Controller Prefab")]
-        public SerializedDictionary<string, GameObject> Data;
+        public SerializedDictionary<string, ItemController> Data;
     }
 }

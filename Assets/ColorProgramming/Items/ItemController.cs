@@ -73,6 +73,8 @@ namespace ColorProgramming.Items
                 var instantiatedNode = GameManager.Instance.BoardController.AddNode(
                     Item.NodeGameObject
                 );
+                var instantiatedController = instantiatedNode.GetComponent<BaseNodeController>();
+                SetupNode(instantiatedController);
                 movable = instantiatedNode.GetComponent<Movable>();
             }
             else
@@ -81,7 +83,6 @@ namespace ColorProgramming.Items
                 movable = movableObject.GetComponent<Movable>();
             }
 
-            SetupItem(movable);
 
             var movableService =
                 GameManager.Instance.TouchController.TouchServiceManager.GetService<MovableService>();
@@ -89,6 +90,6 @@ namespace ColorProgramming.Items
             UpdateCount(itemCount - 1);
         }
 
-        protected abstract void SetupItem(Movable movable);
+        protected abstract void SetupNode(BaseNodeController baseController);
     }
 }

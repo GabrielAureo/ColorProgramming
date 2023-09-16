@@ -435,7 +435,7 @@ GameObject:
   - component: {fileID: 7874483301563896411}
   - component: {fileID: 8099608746153183615}
   m_Layer: 0
-  m_Name: Conditional Node
+  m_Name: Conditional node
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -501,6 +501,8 @@ MonoBehaviour:
   TrueElementRenderer: {fileID: 3728985700133362364}
   FalseElementRenderer: {fileID: 4065274263592008063}
   CheckElementRenderer: {fileID: 8778362232505916639}
+  ElementDisplayMaterial: {fileID: 2100000, guid: a3edb80b9527f2f45b7b8493534410fb,
+    type: 2}
 --- !u!54 &7340069271588974772
 Rigidbody:
   m_ObjectHideFlags: 0

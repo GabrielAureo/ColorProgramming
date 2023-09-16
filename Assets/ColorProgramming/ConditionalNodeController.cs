@@ -14,8 +14,10 @@ namespace ColorProgramming
 
         [SerializeField]
         private Renderer CheckElementRenderer;
+        [SerializeField]
+        private Material ElementDisplayMaterial;
 
-        private ElementsData elementsData;
+        private ElementsData ElementsData => GameManager.Instance.ElementsData;
 
         public void Evaluate(AgentController playerController)
         {
@@ -33,16 +35,18 @@ namespace ColorProgramming
             UpdateElemenstMaterials();
         }
 
+        private void Awake()
+        {
+            UpdateElemenstMaterials();
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private void UpdateElemenstMaterials()
         {
-            if (elementsData == null)
-            {
-                elementsData = ValidateResources.LoadElementsData();
-            }
-            UpdateElementRenderer(ConcreteNode.TrueElement, TrueElementRenderer, elementsData);
-            UpdateElementRenderer(ConcreteNode.FalseElement, FalseElementRenderer, elementsData);
-            UpdateElementRenderer(ConcreteNode.CheckedElement, CheckElementRenderer, elementsData);
+   
+            UpdateElementRenderer(ConcreteNode.TrueElement, TrueElementRenderer, ElementsData);
+            UpdateElementRenderer(ConcreteNode.FalseElement, FalseElementRenderer, ElementsData);
+            UpdateElementRenderer(ConcreteNode.CheckedElement, CheckElementRenderer, ElementsData);
         }
 
         private void UpdateElementRenderer(
@@ -51,9 +55,9 @@ namespace ColorProgramming
             ElementsData elementsData
         )
         {
-            if (renderer == null || renderer.sharedMaterial == null)
+            if (renderer == null)
                 return;
-            var material = new Material(renderer.sharedMaterial);
+            var material = new Material(ElementDisplayMaterial);
             material.SetTexture("_BaseMap", elementsData.Data[element].Texture);
             renderer.material = material;
         }

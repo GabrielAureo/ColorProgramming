@@ -1,9 +1,7 @@
 ﻿using ColorProgramming.Core;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
 namespace ColorProgramming
 {
     public class AgentController : BaseNodeController
@@ -13,8 +11,11 @@ namespace ColorProgramming
         public AgentNode AgentNode;
 
         [Header("Components")]
+
         [SerializeField]
         private Material bodyMaterial;
+
+        private Animator animator;
 
         public override Node Node
         {
@@ -23,19 +24,21 @@ namespace ColorProgramming
         }
 
         private ElementsData elementsData;
-
         private void Awake()
         {
             AgentNode.OnChangeElement = UpdatePlayerElement;
+            animator = GetComponent<Animator>();
         }
 
-        public void WalkGraph(List<BaseNodeController> nodes)
+        public void WalkGraph(AgentPath path)
         {
-            StartCoroutine(DoWalk(nodes));
+            StartCoroutine(DoWalk(path, path.RootPath));
         }
 
-        IEnumerator DoWalk(List<BaseNodeController> nodes)
+        IEnumerator DoWalk(AgentPath path, List<BaseNodeController> rootPath)
         {
+            animator.SetBool("walking", true);
+            var nodes = rootPath;
             for (int i = 0; i < nodes.Count; i++)
             {
                 BaseNodeController nodeController = nodes[i];
@@ -43,6 +46,10 @@ namespace ColorProgramming
                 Vector3 targetPosition = nodeController.transform.position;
                 float t = 0f;
 
+                Quaternion targetRotation = Quaternion.LookRotation(transform.position - targetPosition, Vector3.up);
+
+                // Apply the rotation to your character's transform
+                transform.rotation = targetRotation;
                 // Perform interpolation from the current position to the target position
                 while (t < 1f)
                 {
@@ -50,12 +57,22 @@ namespace ColorProgramming
                     transform.position = Vector3.Lerp(startPosition, targetPosition, t);
                     yield return null;
                 }
-
+                nodeController.OnAgentTouch();
                 if (nodeController is IEvaluatable evaluatableController)
                 {
                     evaluatableController.Evaluate(this);
                 }
+
+                if(nodeController is CapsuleNodeController capsuleController)
+                {
+                    transform.position = capsuleController.transform.position;
+                    yield return StartCoroutine(DoWalk(path, path.SubPaths[capsuleController.ConcreteNode]));
+
+                }
+
+                
             }
+            animator.SetBool("walking", false);
         }
 
         private void OnValidate()
