@@ -23,7 +23,7 @@ namespace ColorProgramming
     public class ElementData
     {
         [SerializeField]
-        public Texture2D Texture;
+        public GameObject Prefab;
 
         [SerializeField]
         public Color Color;

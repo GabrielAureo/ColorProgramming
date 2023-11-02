@@ -39,8 +39,15 @@ namespace ColorProgramming
         {
             animator.SetBool("walking", true);
             var nodes = rootPath;
+
             for (int i = 0; i < nodes.Count; i++)
             {
+
+                if (i == 0)
+                {
+                    transform.position = nodes[0].transform.position;
+                    yield return null;
+                }
                 BaseNodeController nodeController = nodes[i];
                 Vector3 startPosition = transform.position;
                 Vector3 targetPosition = nodeController.transform.position;
@@ -63,14 +70,13 @@ namespace ColorProgramming
                     evaluatableController.Evaluate(this);
                 }
 
-                if(nodeController is CapsuleNodeController capsuleController)
+                if (nodeController is CapsuleNodeController capsuleController)
                 {
-                    transform.position = capsuleController.transform.position;
                     yield return StartCoroutine(DoWalk(path, path.SubPaths[capsuleController.ConcreteNode]));
 
                 }
 
-                
+
             }
             animator.SetBool("walking", false);
         }

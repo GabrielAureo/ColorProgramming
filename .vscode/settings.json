@@ -52,5 +52,6 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "ColorProgramming.sln",
-    "dotnet.codeLens.enableReferencesCodeLens": false
+    "dotnet.codeLens.enableReferencesCodeLens": false,
+    "editor.formatOnSave": true
 }

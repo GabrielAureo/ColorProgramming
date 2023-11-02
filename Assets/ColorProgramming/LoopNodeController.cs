@@ -59,8 +59,8 @@ namespace ColorProgramming
             yield return new WaitForSeconds(0);
             Instantiate(
                 batteryPrefab,
-                spawnedBatteries.transform.position + Vector3.up * (.38f * i),
-                Quaternion.identity,
+                spawnedBatteries.transform.position + Vector3.up * (.4f * i),
+                batteryPrefab.transform.rotation,
                 spawnedBatteries
             );
         }

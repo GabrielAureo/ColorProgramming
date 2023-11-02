@@ -1,5 +1,8 @@
-﻿using ColorProgramming.Core;
+﻿using System.Collections;
+using System.Collections.Generic;
+using ColorProgramming.Core;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace ColorProgramming
@@ -7,17 +10,16 @@ namespace ColorProgramming
     public class ConditionalNodeController : ConcreteNodeController<ConditionalNode>, IEvaluatable
     {
         [SerializeField]
-        private Renderer TrueElementRenderer;
+        private Transform TrueElementTransform;
 
         [SerializeField]
-        private Renderer FalseElementRenderer;
+        private Transform FalseElementTransform;
 
         [SerializeField]
-        private Renderer CheckElementRenderer;
-        [SerializeField]
-        private Material ElementDisplayMaterial;
+        private Transform CheckElementTransform;
 
-        private ElementsData ElementsData => GameManager.Instance.ElementsData;
+
+        private ElementsData ElementsData => Resources.Load<ElementsData>("ElementsData");
 
         public void Evaluate(AgentController playerController)
         {
@@ -32,7 +34,18 @@ namespace ColorProgramming
 
         private void OnValidate()
         {
-            UpdateElemenstMaterials();
+            if (
+                PrefabStageUtility.GetPrefabStage(gameObject) != null
+                || EditorUtility.IsPersistent(this)
+                || EditorApplication.isPlayingOrWillChangePlaymode
+            )
+            {
+                return;
+            }
+            EditorApplication.delayCall += () =>
+            {
+                UpdateElemenstMaterials();
+            };
         }
 
         private void Awake()
@@ -40,26 +53,26 @@ namespace ColorProgramming
             UpdateElemenstMaterials();
         }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private void UpdateElemenstMaterials()
         {
-   
-            UpdateElementRenderer(ConcreteNode.TrueElement, TrueElementRenderer, ElementsData);
-            UpdateElementRenderer(ConcreteNode.FalseElement, FalseElementRenderer, ElementsData);
-            UpdateElementRenderer(ConcreteNode.CheckedElement, CheckElementRenderer, ElementsData);
+            UpdateElementObject(ConcreteNode.TrueElement, TrueElementTransform, ElementsData);
+            UpdateElementObject(ConcreteNode.FalseElement, FalseElementTransform, ElementsData);
+            UpdateElementObject(ConcreteNode.CheckedElement, CheckElementTransform, ElementsData);
         }
 
-        private void UpdateElementRenderer(
+        private void UpdateElementObject(
             Element element,
-            Renderer renderer,
+            Transform transform,
             ElementsData elementsData
         )
         {
-            if (renderer == null)
-                return;
-            var material = new Material(ElementDisplayMaterial);
-            material.SetTexture("_BaseMap", elementsData.Data[element].Texture);
-            renderer.material = material;
+            foreach (Transform child in transform)
+            {
+                DestroyImmediate(child.gameObject);
+            }
+            var obj = Instantiate(elementsData[element].Prefab, transform);
+            obj.transform.localPosition = Vector3.zero;
+
         }
     }
 }
