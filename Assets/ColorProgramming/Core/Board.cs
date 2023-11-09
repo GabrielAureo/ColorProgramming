@@ -66,10 +66,29 @@ namespace ColorProgramming.Core
 
             foreach (var node in rootPath)
             {
+                if (node is CapsuleNode capsuleNode)
+                {
+                    if (!ScopeBodies.TryGetValue(capsuleNode, out var capsuleBody))
+                    {
+                        capsuleNode.InvalidMessage = "Must have a Portal In and Out inside it";
+
+                        path = null;
+                        return false;
+                    }
+                    if (capsuleBody.SourceNode == null || capsuleBody.TargetNode == null)
+                    {
+                        capsuleNode.InvalidMessage = "Must have a Portal In and Out inside it";
+                        path = null;
+                        return false;
+                    }
+
+                    capsuleNode.InvalidMessage = "";
+                }
+
                 if (node is LoopNode loopNode)
                 {
-                    if(LoopBodies.TryGetValue(loopNode, out var loopBody)){
-
+                    if (LoopBodies.TryGetValue(loopNode, out var loopBody))
+                    {
                         var loopPath = BuildPath(loopBody);
                         loopPath = Enumerable
                         .Repeat(loopPath, loopNode.TotalLoops)
@@ -161,11 +180,11 @@ namespace ColorProgramming.Core
             {
                 adjacencyList = FindOrCreateScope(scope);
 
-                if(node is InputNode)
+                if (node is InputNode)
                 {
                     adjacencyList.SourceNode = node;
                 }
-                if(node is OutputNode)
+                if (node is OutputNode)
                 {
                     adjacencyList.TargetNode = node;
                 }
@@ -237,7 +256,7 @@ namespace ColorProgramming.Core
 
         public Edge RemoveConnection(Node from, Node to, CapsuleNode scope = null)
         {
-            if(scope != null)
+            if (scope != null)
             {
                 return RemoveEdge(from, to, ScopeBodies[scope]);
             }

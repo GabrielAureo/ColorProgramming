@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace ColorProgramming
 {
@@ -13,6 +14,10 @@ namespace ColorProgramming
 
         [SerializeField]
         private GameObject hologramGameObject;
+
+        [SerializeField]
+        private Image alertImage;
+
 
         private void Awake()
         {
@@ -31,6 +36,13 @@ namespace ColorProgramming
         {
             GameManager.Instance.BoardController.SetScope(ConcreteNode);
         }
+
+        void Update()
+        {
+            alertImage.gameObject.SetActive(ConcreteNode.InvalidMessage != "");
+
+        }
+
 
         public void MapToHologramBounds()
         {
