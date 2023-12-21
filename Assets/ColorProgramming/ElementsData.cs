@@ -26,6 +26,9 @@ namespace ColorProgramming
         public GameObject Prefab;
 
         [SerializeField]
+        public Sprite Sprite;
+
+        [SerializeField]
         public Color Color;
     }
 }

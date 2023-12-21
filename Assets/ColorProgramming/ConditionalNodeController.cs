@@ -53,7 +53,7 @@ namespace ColorProgramming
             UpdateElemenstMaterials();
         }
 
-        private void UpdateElemenstMaterials()
+        public void UpdateElemenstMaterials()
         {
             UpdateElementObject(ConcreteNode.TrueElement, TrueElementTransform, ElementsData);
             UpdateElementObject(ConcreteNode.FalseElement, FalseElementTransform, ElementsData);

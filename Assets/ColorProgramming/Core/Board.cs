@@ -90,12 +90,14 @@ namespace ColorProgramming.Core
                     if (LoopBodies.TryGetValue(loopNode, out var loopBody))
                     {
                         var loopPath = BuildPath(loopBody);
+                        // Add loop node to beginning and end of list
+                        loopPath.Insert(0, loopNode);
+
                         loopPath = Enumerable
                         .Repeat(loopPath, loopNode.TotalLoops)
                         .SelectMany(x => x)
                         .ToList();
-                        // Add loop node to beginning and end of list
-                        loopPath.Insert(0, loopNode);
+
                         loopPath.Add(node);
                         flattenedPath.AddRange(loopPath);
                     }
@@ -209,10 +211,22 @@ namespace ColorProgramming.Core
             {
                 LoopBodies[scope] = new AdjacencyList();
             }
+
+            if (!LoopBodies[scope].ContainsKey(from))
+            {
+                LoopBodies[scope][from] = new List<Edge>();
+            }
+            if (!LoopBodies[scope].ContainsKey(to))
+            {
+                LoopBodies[scope][to] = new List<Edge>();
+            }
+
             var edge = Connect(from, to, LoopBodies[scope]);
             edge.IsLoop = true;
 
             Node inOutLoopNode = null;
+
+            // if edge is connected to loop node, we grab the other
 
             if (edge.To == scope)
             {
@@ -233,6 +247,7 @@ namespace ColorProgramming.Core
                 {
                     LoopBodies[scope].TargetNode = inOutLoopNode;
                 }
+                LoopBodies[scope][edge.From].Remove(edge);
             }
 
             return edge;
@@ -263,24 +278,29 @@ namespace ColorProgramming.Core
             return RemoveEdge(from, to, AdjacencyList);
         }
 
+        public Edge RemoveLoop(Node from, Node to, LoopNode scope)
+        {
+            return RemoveEdge(from, to, LoopBodies[scope]);
+        }
+
         private Edge RemoveEdge(Node from, Node to, AdjacencyList adjacencyList)
         {
             CheckIfNodesPresent(adjacencyList, from, to);
 
-            Edge edgeToRemove = AdjacencyList[from].Find(e => e.To.Equals(to));
+            Edge edgeToRemove = adjacencyList[from].Find(e => e.To.Equals(to));
 
             if (edgeToRemove != null)
             {
-                AdjacencyList[from].Remove(edgeToRemove);
+                adjacencyList[from].Remove(edgeToRemove);
                 TraversableUpdate();
                 return edgeToRemove;
             }
 
-            edgeToRemove ??= AdjacencyList[to].Find(e => e.To.Equals(from));
+            edgeToRemove ??= adjacencyList[to].Find(e => e.To.Equals(from));
 
             if (edgeToRemove != null)
             {
-                AdjacencyList[to].Remove(edgeToRemove);
+                adjacencyList[to].Remove(edgeToRemove);
                 TraversableUpdate();
                 return edgeToRemove;
             }

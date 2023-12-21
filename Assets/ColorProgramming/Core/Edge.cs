@@ -33,5 +33,7 @@ namespace ColorProgramming.Core
         {
             return HashCode.Combine(From, To, Id);
         }
+
+
     }
 }

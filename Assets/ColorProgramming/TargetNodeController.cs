@@ -28,5 +28,17 @@ namespace ColorProgramming
 
             AccentMaterial.SetColor("_BaseColor", elementsData[TargetNode.CurrentElement].Color);
         }
+
+        public override void OnAgentTouch(AgentController agent)
+        {
+            if (agent.AgentNode.CurrentElement == TargetNode.CurrentElement)
+            {
+                GameManager.Instance.StageController.CompleteStage();
+            }
+            else
+            {
+                GameManager.Instance.StageController.FailStage();
+            }
+        }
     }
 }

@@ -42,10 +42,8 @@ namespace ColorProgramming
             {
                 StartCoroutine(DestroyBattery(child.gameObject));
             }
-            for (var i = 0; i < ConcreteNode.TotalLoops; i++)
-            {
-                StartCoroutine(SpawnBattery(i));
-            }
+            SpawnBatteries();
+
         }
 
         IEnumerator DestroyBattery(GameObject go)
@@ -54,15 +52,26 @@ namespace ColorProgramming
             DestroyImmediate(go);
         }
 
+        public void SpawnBatteries()
+        {
+            for (var i = 0; i < ConcreteNode.TotalLoops; i++)
+            {
+                StartCoroutine(SpawnBattery(i));
+            }
+        }
+
         IEnumerator SpawnBattery(int i)
         {
             yield return new WaitForSeconds(0);
-            Instantiate(
+            var battery = Instantiate(
                 batteryPrefab,
                 spawnedBatteries.transform.position + Vector3.up * (.4f * i),
-                batteryPrefab.transform.rotation,
+                Quaternion.identity,
                 spawnedBatteries
             );
+
+            battery.transform.localRotation = Quaternion.Euler(Vector3.left * 90f);
+
         }
 
         private void StartBuildMode()

@@ -75,6 +75,7 @@ namespace ColorProgramming.Items
                 );
                 var instantiatedController = instantiatedNode.GetComponent<BaseNodeController>();
                 SetupNode(instantiatedController);
+                SetupController(instantiatedController);
                 movable = instantiatedNode.GetComponent<Movable>();
             }
             else
@@ -91,5 +92,7 @@ namespace ColorProgramming.Items
         }
 
         protected abstract void SetupNode(BaseNodeController baseController);
+
+        protected abstract void SetupController(BaseNodeController baseController);
     }
 }

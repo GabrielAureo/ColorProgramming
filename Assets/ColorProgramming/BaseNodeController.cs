@@ -64,6 +64,6 @@ namespace ColorProgramming
                 return () => { };
         }
 
-        public virtual void OnAgentTouch() { }
+        public virtual void OnAgentTouch(AgentController agent) { }
     }
 }

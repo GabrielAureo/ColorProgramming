@@ -73,25 +73,13 @@ namespace ColorProgramming
             scope.ShowScope();
         }
 
-        public override void OnAgentTouch()
+        public override void OnAgentTouch(AgentController _)
         {
             hologramGameObject.SetActive(true);
             MapToHologramBounds();
         }
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-            var bounds = GameManager.Instance.BoardController.CalculateCapsuleBounds(ConcreteNode);
-            Debug.Log(bounds);
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
 
-            Gizmos.DrawLine(bounds.center, transform.position + hologramBounds.center);
-
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position + hologramBounds.center, hologramBounds.size);
-        }
     }
 
 }

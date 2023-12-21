@@ -64,7 +64,7 @@ namespace ColorProgramming
                     transform.position = Vector3.Lerp(startPosition, targetPosition, t);
                     yield return null;
                 }
-                nodeController.OnAgentTouch();
+                nodeController.OnAgentTouch(this);
                 if (nodeController is IEvaluatable evaluatableController)
                 {
                     evaluatableController.Evaluate(this);
@@ -73,10 +73,10 @@ namespace ColorProgramming
                 if (nodeController is CapsuleNodeController capsuleController)
                 {
                     yield return StartCoroutine(DoWalk(path, path.SubPaths[capsuleController.ConcreteNode]));
+                    transform.position = nodes[i].transform.position;
+                    animator.SetBool("walking", true);
 
                 }
-
-
             }
             animator.SetBool("walking", false);
         }

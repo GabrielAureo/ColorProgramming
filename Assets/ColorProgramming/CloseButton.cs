@@ -9,6 +9,11 @@ namespace ColorProgramming
 {
     public class CloseButton : MonoBehaviour
     {
+        void Update()
+        {
+            gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
+        }
+
         public void OnPress()
         {
             GameManager.Instance.BoardController.SetScope();

@@ -7,16 +7,36 @@ namespace ColorProgramming
     public class StageController : MonoBehaviour
     {
         [SerializeField]
+        private GameObject VictoryScreen;
+        [SerializeField]
+        private GameObject FailureScreen;
+
+        [SerializeField]
         private Button PlayButton;
 
         [SerializeField]
         private Button CloseButton;
 
-        //TODO implement stages data and use it to SETBOard on BoardController
-
         private void Start()
         {
             GameManager.Instance.BoardController.SetBoard();
+        }
+
+        public void CompleteStage()
+        {
+            VictoryScreen.SetActive(true);
+        }
+
+        public void FailStage()
+        {
+            FailureScreen.SetActive(true);
+        }
+
+        public void ResetStage()
+        {
+            VictoryScreen.SetActive(false);
+            FailureScreen.SetActive(false);
+
         }
 
         private void Update()
@@ -27,5 +47,7 @@ namespace ColorProgramming
 
             CloseButton.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
         }
+
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using AssetsolorProgramming.Items;
-using ColorProgramming.Core;
+﻿using ColorProgramming.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +9,13 @@ namespace ColorProgramming.Items
 {
     public class InputNodeItemController : ConcreteItemController<InputNode>
     {
+        protected override void SetupConcreteController(ConcreteNodeController<InputNode> nodeController)
+        {
+        }
+
         protected override void SetupConcreteNode(InputNode concreteNode)
         {
-           
+
         }
     }
 }

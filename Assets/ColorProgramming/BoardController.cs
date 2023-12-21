@@ -15,7 +15,10 @@ namespace ColorProgramming
         public IReadOnlyDictionary<Node, BoardScope> Scopes => scopes;
         private BoardScope CurrentScope
         {
-            get { return currentScopeKey == null ? globalScope : scopes[currentScopeKey]; }
+            get
+            {
+                return currentScopeKey == null ? globalScope : scopes[currentScopeKey];
+            }
         }
         private Node currentScopeKey;
 
@@ -73,6 +76,17 @@ namespace ColorProgramming
 
         public void ToggleLoopBuildMode(LoopNode loopNode)
         {
+
+            if (currentScopeKey == loopNode)
+            {
+                currentScopeKey = null;
+                return;
+            }
+            if (!scopes.TryGetValue(loopNode, out var _))
+            {
+                var scope = new BoardScope();
+                scopes.Add(loopNode, scope);
+            }
             currentScopeKey = loopNode;
         }
 
@@ -150,6 +164,10 @@ namespace ColorProgramming
             if (currentScopeKey is CapsuleNode capsuleNode)
             {
                 removed = board.RemoveConnection(node.Node, other.Node, capsuleNode);
+            }
+            else if (currentScopeKey is LoopNode loopNode)
+            {
+                removed = board.RemoveLoop(node.Node, other.Node, loopNode);
             }
             else
             {
