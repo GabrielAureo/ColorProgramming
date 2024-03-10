@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuButton : MonoBehaviour
 {
-    public void LoadMainScene()
+    public void LoadStage(int stageIndex)
     {
-        SceneManager.LoadScene("MainScene");
+        StageLoader.LoadStage(stageIndex);
     }
 }

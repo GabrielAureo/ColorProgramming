@@ -7,7 +7,7 @@ namespace ColorProgramming
     {
         private Camera _main;
 
-        private void Awake()
+        private void Start()
         {
             _main = Camera.main;
         }

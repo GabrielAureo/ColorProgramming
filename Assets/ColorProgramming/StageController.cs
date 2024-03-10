@@ -1,5 +1,8 @@
 ﻿using System.Collections;
+using System.Text.RegularExpressions;
+using ColorProgramming.Items;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ColorProgramming
@@ -17,9 +20,33 @@ namespace ColorProgramming
         [SerializeField]
         private Button CloseButton;
 
-        private void Start()
+        [SerializeField] private Transform inventoryContent;
+
+        void Start()
         {
+            LoadStage();
+        }
+
+
+        public void LoadMainMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+
+        public void LoadStage()
+        {
+            var inventory = FindObjectOfType<SceneInventory>();
+
+            LoadItems(inventory.Items);
             GameManager.Instance.BoardController.SetBoard();
+        }
+
+        private void LoadItems(ItemController[] Items)
+        {
+            foreach (var item in Items)
+            {
+                Instantiate(item.gameObject, inventoryContent);
+            }
         }
 
         public void CompleteStage()
@@ -36,8 +63,10 @@ namespace ColorProgramming
         {
             VictoryScreen.SetActive(false);
             FailureScreen.SetActive(false);
-
+            
+            StageLoader.ResetStage();
         }
+
 
         private void Update()
         {

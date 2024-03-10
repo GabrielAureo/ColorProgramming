@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
+using UnityEditor;
 namespace ColorProgramming
 {
     public class AgentController : BaseNodeController
@@ -9,6 +11,9 @@ namespace ColorProgramming
         public float speed = 5f;
 
         public AgentNode AgentNode;
+
+        [SerializeField]
+        Transform elementTransform;
 
         [Header("Components")]
 
@@ -83,7 +88,18 @@ namespace ColorProgramming
 
         private void OnValidate()
         {
-            UpdatePlayerElement();
+            if (
+                PrefabStageUtility.GetPrefabStage(gameObject) != null
+                || EditorUtility.IsPersistent(this)
+                || EditorApplication.isPlayingOrWillChangePlaymode
+            )
+            {
+                return;
+            }
+            EditorApplication.delayCall += () =>
+            {
+                UpdatePlayerElement();
+            };
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -95,6 +111,14 @@ namespace ColorProgramming
             }
 
             bodyMaterial.SetColor("_BaseColor", elementsData[AgentNode.CurrentElement].Color);
+
+            foreach (Transform child in elementTransform)
+            {
+                DestroyImmediate(child.gameObject);
+            }
+
+            var obj = Instantiate(elementsData[AgentNode.CurrentElement].Prefab, elementTransform);
+            obj.transform.localPosition = Vector3.zero;
         }
     }
 }

@@ -30,6 +30,8 @@ namespace ColorProgramming
 
         public bool isGlobalScope;
 
+        private InventoryController InventoryController => _inventoryController ?? FindObjectOfType<InventoryController>();
+        private InventoryController _inventoryController;
 
         public void WalkGraph()
         {
@@ -209,7 +211,7 @@ namespace ColorProgramming
             CurrentScope.ShowScope();
             isGlobalScope = true;
 
-            GameManager.Instance.InventoryController.ClearTemporaryItems();
+            InventoryController.ClearTemporaryItems();
         }
 
         public void SetScope(Node scopeKey)
@@ -228,7 +230,7 @@ namespace ColorProgramming
             if (scopeKey is CapsuleNode capsuleNode)
             {
                 var newItems = EvaluateScopeItems(capsuleNode);
-                GameManager.Instance.InventoryController.SetTemporaryItems(newItems);
+                InventoryController.SetTemporaryItems(newItems);
             }
 
         }

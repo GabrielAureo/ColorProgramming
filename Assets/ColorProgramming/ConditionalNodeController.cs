@@ -18,6 +18,9 @@ namespace ColorProgramming
         [SerializeField]
         private Transform CheckElementTransform;
 
+        [SerializeField]
+        private GameObject IfNotRing;
+
 
         private ElementsData ElementsData => Resources.Load<ElementsData>("ElementsData");
 
@@ -45,6 +48,7 @@ namespace ColorProgramming
             EditorApplication.delayCall += () =>
             {
                 UpdateElemenstMaterials();
+
             };
         }
 
@@ -58,6 +62,8 @@ namespace ColorProgramming
             UpdateElementObject(ConcreteNode.TrueElement, TrueElementTransform, ElementsData);
             UpdateElementObject(ConcreteNode.FalseElement, FalseElementTransform, ElementsData);
             UpdateElementObject(ConcreteNode.CheckedElement, CheckElementTransform, ElementsData);
+            IfNotRing.SetActive(ConcreteNode.IsNot);
+
         }
 
         private void UpdateElementObject(
