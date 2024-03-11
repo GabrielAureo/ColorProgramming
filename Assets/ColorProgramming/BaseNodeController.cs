@@ -44,16 +44,22 @@ namespace ColorProgramming
 
         protected void ConnectAction()
         {
-            GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
-                new NodeConnectService(this, Enums.ConnectionServiceMode.CONNECT, true)
-            );
+            var touchService = GameManager.Instance.TouchController.TouchServiceManager;
+
+            var service = new NodeConnectService(this, Enums.ConnectionServiceMode.CONNECT, true);
+            touchService.RegisterService(service);
+            Toast.Show(null, "Pressione outro objeto para conectar", () => touchService.UnregisterService(service));
         }
 
         protected void DisconnectAction()
         {
-            GameManager.Instance.TouchController.TouchServiceManager.RegisterService(
-                new NodeConnectService(this, Enums.ConnectionServiceMode.DISCONNECT, true)
-            );
+            var touchService = GameManager.Instance.TouchController.TouchServiceManager;
+
+            var service = new NodeConnectService(this, Enums.ConnectionServiceMode.DISCONNECT, true);
+            touchService.RegisterService(service);
+
+            Toast.Show(null, "Pressione outro objeto para desconectar", () => touchService.UnregisterService(service));
+
         }
 
         private UnityAction ParseActionSignal(string actionSignal)

@@ -90,6 +90,8 @@ namespace ColorProgramming
                 scopes.Add(loopNode, scope);
             }
             currentScopeKey = loopNode;
+
+            Toast.Show(null, "Building Loop", () => ToggleLoopBuildMode(loopNode));
         }
 
         public void SetBoard()
@@ -232,6 +234,8 @@ namespace ColorProgramming
                 var newItems = EvaluateScopeItems(capsuleNode);
                 InventoryController.SetTemporaryItems(newItems);
             }
+
+            Toast.Show(null, "Building Capsule", () => SetScope());
 
         }
 

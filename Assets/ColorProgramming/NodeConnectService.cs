@@ -44,6 +44,8 @@ namespace ColorProgramming
                     controller
                 );
             }
+
+            Toast.Close();
         }
     }
 }
