@@ -11,7 +11,6 @@ namespace ColorProgramming.Items
     {
         protected override void SetupConcreteController(ConcreteNodeController<OutputNode> nodeController)
         {
-            throw new NotImplementedException();
         }
 
         protected override void SetupConcreteNode(OutputNode concreteNode)

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SceneManagement;
 using UnityEditor;
+using UnityEngine.UI;
 namespace ColorProgramming
 {
     public class AgentController : BaseNodeController
@@ -11,6 +12,8 @@ namespace ColorProgramming
         public float speed = 5f;
 
         public AgentNode AgentNode;
+
+        public Element InitialElement;
 
         [SerializeField]
         Transform elementTransform;
@@ -45,6 +48,7 @@ namespace ColorProgramming
             animator.SetBool("walking", true);
             var nodes = rootPath;
 
+
             for (int i = 0; i < nodes.Count; i++)
             {
 
@@ -52,6 +56,7 @@ namespace ColorProgramming
                 {
                     transform.position = nodes[0].transform.position;
                     yield return null;
+
                 }
                 BaseNodeController nodeController = nodes[i];
                 Vector3 startPosition = transform.position;
@@ -77,8 +82,11 @@ namespace ColorProgramming
 
                 if (nodeController is CapsuleNodeController capsuleController)
                 {
+                    transform.localScale = Vector3.one * 0.3f;
+
                     yield return StartCoroutine(DoWalk(path, path.SubPaths[capsuleController.ConcreteNode]));
                     transform.position = nodes[i].transform.position;
+                    transform.localScale = Vector3.one;
                     animator.SetBool("walking", true);
 
                 }
@@ -98,6 +106,7 @@ namespace ColorProgramming
             }
             EditorApplication.delayCall += () =>
             {
+                AgentNode.SetElement(InitialElement);
                 UpdatePlayerElement();
             };
         }
@@ -112,13 +121,9 @@ namespace ColorProgramming
 
             bodyMaterial.SetColor("_BaseColor", elementsData[AgentNode.CurrentElement].Color);
 
-            foreach (Transform child in elementTransform)
-            {
-                DestroyImmediate(child.gameObject);
-            }
+            var elementImage = elementTransform.GetComponent<Image>();
+            elementImage.sprite = elementsData[AgentNode.CurrentElement].Sprite;
 
-            var obj = Instantiate(elementsData[AgentNode.CurrentElement].Prefab, elementTransform);
-            obj.transform.localPosition = Vector3.zero;
         }
     }
 }

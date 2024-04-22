@@ -41,7 +41,7 @@ public class StageLoader : MonoBehaviour
 
         SceneManager.LoadScene("MainScene");
         SceneManager.LoadScene($"Stage {stageIndex}", LoadSceneMode.Additive);
-
+        
         instance.StartCoroutine(WaitLoad());
 
     }

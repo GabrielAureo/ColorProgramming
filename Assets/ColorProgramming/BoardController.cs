@@ -1,5 +1,6 @@
 ﻿using ColorProgramming.Core;
 using ColorProgramming.Items;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace ColorProgramming
         public GameObject edgePrefab;
 
         public bool isGlobalScope;
+        public bool IsWalking { get; private set; }
 
         private InventoryController InventoryController => _inventoryController ?? FindObjectOfType<InventoryController>();
         private InventoryController _inventoryController;
@@ -40,11 +42,12 @@ namespace ColorProgramming
 
             var rootPath = ScopeToPath(globalScope, board.Path);
 
-            var subGraphs = rootPath.FindAll((controller) => controller is CapsuleNodeController capsuleController && board.ScopeBodies.ContainsKey(capsuleController.ConcreteNode));
+            var subGraphs = rootPath.FindAll((controller) => controller is CapsuleNodeController capsuleController && board.ScopeBodies.ContainsKey(capsuleController.ConcreteNode.ScopeKey));
+            var capsuleNodes = subGraphs.Cast<CapsuleNodeController>();
 
             var capsulePaths = board.ScopeBodies.ToDictionary((scope) => scope.Key,
                 (scope) => board.BuildPath(scope.Value))
-                .ToDictionary((scope) => scope.Key, (scope) => ScopeToPath(scopes[scope.Key], scope.Value));
+                .ToDictionary((scope) => capsuleNodes.First((capsule) => capsule.ConcreteNode.ScopeKey == scope.Key).ConcreteNode, (scope) => GetPathFromScopeKey(scope.Key, capsuleNodes, scope.Value));
 
             var path = new AgentPath()
             {
@@ -52,7 +55,16 @@ namespace ColorProgramming
                 SubPaths = capsulePaths
             };
 
+            IsWalking = true;
+
             player.WalkGraph(path);
+        }
+
+        private List<BaseNodeController> GetPathFromScopeKey(Guid key, IEnumerable<CapsuleNodeController> capsuleNodes, List<Node> value)
+        {
+            var capsuleScope = capsuleNodes.First((capsule) => capsule.ConcreteNode.ScopeKey == key);
+            return ScopeToPath(scopes[capsuleScope.ConcreteNode], value);
+
         }
 
         private List<BaseNodeController> ScopeToPath(BoardScope scope, List<Node> path)
@@ -117,6 +129,8 @@ namespace ColorProgramming
             AddNode(player);
             AddNode(target);
             isGlobalScope = true;
+            IsWalking = false;
+            player.AgentNode.SetElement(player.InitialElement);
         }
 
         public Board GetCurrentBoard()
@@ -231,6 +245,7 @@ namespace ColorProgramming
 
             if (scopeKey is CapsuleNode capsuleNode)
             {
+
                 var newItems = EvaluateScopeItems(capsuleNode);
                 InventoryController.SetTemporaryItems(newItems);
             }
@@ -251,7 +266,7 @@ namespace ColorProgramming
             List<ItemController> result = new();
 
             var hasAdjacencyList = board.ScopeBodies.TryGetValue(
-                capsuleScope,
+                capsuleScope.ScopeKey,
                 out var scopeAdjacencyList
             );
 

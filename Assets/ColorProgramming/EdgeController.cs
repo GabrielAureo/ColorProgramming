@@ -26,6 +26,11 @@ namespace ColorProgramming
 
         void Update()
         {
+
+            if (GameManager.Instance.BoardController.IsWalking)
+            {
+                return;
+            }
             if (Edge.IsLoop)
             {
                 RenderBezierLine();

@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEditor;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace ColorProgramming
 {
@@ -56,27 +57,40 @@ namespace ColorProgramming
         {
             for (var i = 0; i < ConcreteNode.TotalLoops; i++)
             {
+
                 StartCoroutine(SpawnBattery(i));
+
             }
         }
 
         IEnumerator SpawnBattery(int i)
         {
             yield return new WaitForSeconds(0);
-            var battery = Instantiate(
+            var layoutGroup = spawnedBatteries.GetComponent<HorizontalLayoutGroup>();
+            layoutGroup.childControlWidth = true;
+            Instantiate(
                 batteryPrefab,
-                spawnedBatteries.transform.position + Vector3.up * (.4f * i),
-                Quaternion.identity,
                 spawnedBatteries
             );
-
-            battery.transform.localRotation = Quaternion.Euler(Vector3.left * 90f);
+            yield return new WaitForSeconds(0);
+            layoutGroup.childControlWidth = false;
 
         }
 
         private void StartBuildMode()
         {
             GameManager.Instance.BoardController.ToggleLoopBuildMode(ConcreteNode);
+        }
+
+        public override void OnAgentTouch(AgentController agent)
+        {
+            base.OnAgentTouch(agent);
+            if (spawnedBatteries.childCount > 0)
+            {
+
+                StartCoroutine(DestroyBattery(spawnedBatteries.GetChild(0).gameObject));
+            }
+
         }
     }
 }

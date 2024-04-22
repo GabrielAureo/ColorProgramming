@@ -28,9 +28,15 @@ namespace ColorProgramming
         {
             var newElement =
                 playerController.AgentNode.CurrentElement == ConcreteNode.CheckedElement
-                && !ConcreteNode.IsNot
                     ? ConcreteNode.TrueElement
                     : ConcreteNode.FalseElement;
+
+            if (ConcreteNode.IsNot)
+            {
+                newElement = playerController.AgentNode.CurrentElement != ConcreteNode.CheckedElement
+                    ? ConcreteNode.TrueElement
+                    : ConcreteNode.FalseElement;
+            }
 
             playerController.AgentNode.SetElement(newElement);
         }

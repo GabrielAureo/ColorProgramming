@@ -34,6 +34,7 @@ namespace ColorProgramming
 
         private void Open()
         {
+            Debug.Log("Opening " + ConcreteNode.ScopeKey.ToString());
             GameManager.Instance.BoardController.SetScope(ConcreteNode);
         }
 

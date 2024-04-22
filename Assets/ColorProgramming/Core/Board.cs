@@ -17,7 +17,7 @@ namespace ColorProgramming.Core
         public AdjacencyList AdjacencyList { get; private set; }
         public Dictionary<LoopNode, AdjacencyList> LoopBodies { get; private set; }
 
-        public Dictionary<CapsuleNode, AdjacencyList> ScopeBodies { get; private set; }
+        public Dictionary<Guid, AdjacencyList> ScopeBodies { get; private set; }
 
         public bool IsTraversable
         {
@@ -68,7 +68,7 @@ namespace ColorProgramming.Core
             {
                 if (node is CapsuleNode capsuleNode)
                 {
-                    if (!ScopeBodies.TryGetValue(capsuleNode, out var capsuleBody))
+                    if (!ScopeBodies.TryGetValue(capsuleNode.ScopeKey, out var capsuleBody))
                     {
                         capsuleNode.InvalidMessage = "Must have a Portal In and Out inside it";
 
@@ -273,7 +273,7 @@ namespace ColorProgramming.Core
         {
             if (scope != null)
             {
-                return RemoveEdge(from, to, ScopeBodies[scope]);
+                return RemoveEdge(from, to, ScopeBodies[scope.ScopeKey]);
             }
             return RemoveEdge(from, to, AdjacencyList);
         }
@@ -324,10 +324,10 @@ namespace ColorProgramming.Core
 
         private AdjacencyList FindOrCreateScope(CapsuleNode scope)
         {
-            if (!ScopeBodies.TryGetValue(scope, out var capsuleScope))
+            if (!ScopeBodies.TryGetValue(scope.ScopeKey, out var capsuleScope))
             {
-                ScopeBodies[scope] = new AdjacencyList();
-                capsuleScope = ScopeBodies[scope];
+                ScopeBodies[scope.ScopeKey] = new AdjacencyList();
+                capsuleScope = ScopeBodies[scope.ScopeKey];
             }
             return capsuleScope;
         }

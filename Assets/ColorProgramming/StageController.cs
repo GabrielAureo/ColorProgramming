@@ -43,6 +43,10 @@ namespace ColorProgramming
 
         private void LoadItems(ItemController[] Items)
         {
+            foreach (Transform oldItem in inventoryContent)
+            {
+                Destroy(oldItem.gameObject);
+            }
             foreach (var item in Items)
             {
                 Instantiate(item.gameObject, inventoryContent);
@@ -63,7 +67,7 @@ namespace ColorProgramming
         {
             VictoryScreen.SetActive(false);
             FailureScreen.SetActive(false);
-            
+
             StageLoader.ResetStage();
         }
 

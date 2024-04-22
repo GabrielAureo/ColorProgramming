@@ -5,7 +5,7 @@ namespace ColorProgramming.Core
     [Serializable]
     public class AgentNode : Node
     {
-        public Element CurrentElement;
+        public Element CurrentElement { get; private set; }
 
         public delegate void ChangeElementEvent();
 
