@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ColorProgramming.Items;
+﻿using ColorProgramming.Items;
 using UnityEngine;
 
 namespace ColorProgramming
@@ -10,42 +8,16 @@ namespace ColorProgramming
         private ItemController[] items;
         private ItemController[] temporaryItems;
 
-        private ItemController selectedItem;
-
         [SerializeField]
         private Transform inventoryContent;
 
         [SerializeField]
         private GameObject itemPrefab;
 
-        public void SetSelectedItem(ItemController selectedItem)
+        private void Awake()
         {
-            this.selectedItem = selectedItem;
-            foreach (var item in items)
-            {
-                item.SetSelected(false);
-            }
-            this.selectedItem.SetSelected(true);
+            items = inventoryContent.GetComponentsInChildren<ItemController>();
         }
-
-        public void SetupInventory(ItemController[] items)
-        {
-            var newItems = new List<ItemController>();
-            foreach (Transform oldItem in inventoryContent)
-            {
-                Destroy(oldItem.gameObject);
-            }
-            foreach (var item in items)
-            {
-                var itemObj = Instantiate(item.gameObject, inventoryContent);
-                var itemController = itemObj.GetComponent<ItemController>();
-                newItems.Add(itemController);
-            }
-
-            this.items = newItems.ToArray();
-        }
-
-
 
         public void SetTemporaryItems(ItemController[] newItems)
         {
@@ -55,15 +27,15 @@ namespace ColorProgramming
 
         public void ClearTemporaryItems()
         {
-            temporaryItems = new ItemController[] { };
+            temporaryItems = new ItemController[] {};
             RefreshInventory();
         }
 
-        public void RefreshInventory()
+        private void RefreshInventory()
         {
             foreach (Transform child in inventoryContent)
             {
-                if (child.CompareTag("Temporary"))
+                if(child.CompareTag("Temporary"))
                 {
                     Destroy(child.gameObject);
                 }

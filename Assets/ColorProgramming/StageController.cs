@@ -20,6 +20,7 @@ namespace ColorProgramming
         [SerializeField]
         private Button CloseButton;
 
+        [SerializeField] private Transform inventoryContent;
 
         void Start()
         {
@@ -42,9 +43,14 @@ namespace ColorProgramming
 
         private void LoadItems(ItemController[] Items)
         {
-
-            GameManager.Instance.InventoryController.SetupInventory(Items);
-
+            foreach (Transform oldItem in inventoryContent)
+            {
+                Destroy(oldItem.gameObject);
+            }
+            foreach (var item in Items)
+            {
+                Instantiate(item.gameObject, inventoryContent);
+            }
         }
 
         public void CompleteStage()

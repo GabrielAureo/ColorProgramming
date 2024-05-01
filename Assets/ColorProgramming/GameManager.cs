@@ -17,7 +17,6 @@ namespace ColorProgramming
         public NodePrefabCollection NodePrefabCollection;
         public ElementsData ElementsData;
         public StageController StageController;
-        public InventoryController InventoryController;
 
         private void OnEnable()
         {

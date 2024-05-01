@@ -8,12 +8,13 @@ namespace ColorProgramming.Items
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
 
-    public abstract class ItemController : MonoBehaviour, IPointerDownHandler
+    public abstract class ItemController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
-        private int itemCount;
-        public bool selected;
+        private bool isPressed = false;
+        private float holdTime = 0.25f;
+        private float currentHold = 0f;
 
-        private Outline outline;
+        private int itemCount;
 
         public abstract Item Item { get; set; }
 
@@ -21,12 +22,27 @@ namespace ColorProgramming.Items
         [SerializeField]
         private TextMeshProUGUI itemCountGUI;
 
+        [SerializeField]
+        private Image loadingRing;
 
         private void Start()
         {
             UpdateCount(Item.ItemQuantity);
         }
 
+        private void Update()
+        {
+            if (isPressed)
+            {
+                currentHold += Time.deltaTime;
+                if (currentHold >= holdTime)
+                {
+                    isPressed = false;
+                    OnHold();
+                }
+            }
+            loadingRing.fillAmount = (currentHold / holdTime);
+        }
 
         private void UpdateCount(int newCount)
         {
@@ -36,27 +52,14 @@ namespace ColorProgramming.Items
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            GameManager.Instance.InventoryController.SetSelectedItem(this);
+            isPressed = true;
+            currentHold = 0f; // Reset hold time
         }
 
-        public void SetSelected(bool selected)
+        public void OnPointerUp(PointerEventData eventData)
         {
-            if (selected)
-            {
-                if (!outline)
-                    outline = gameObject.AddComponent<Outline>();
-
-                outline.enabled = true;
-                outline.effectColor = Color.green;
-                outline.effectDistance = Vector2.one * 4f;
-            }
-            else
-            {
-                if (outline)
-                    outline.enabled = false;
-
-
-            }
+            isPressed = false;
+            currentHold = 0f; // Reset hold time
         }
 
         private void OnHold()
