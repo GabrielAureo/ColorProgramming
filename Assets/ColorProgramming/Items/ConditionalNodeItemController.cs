@@ -2,7 +2,6 @@
 using ColorProgramming;
 using ColorProgramming.Core;
 using UnityEngine;
-using UnityEditor.SceneManagement;
 using UnityEditor;
 using UnityEngine.UI;
 
@@ -23,8 +22,9 @@ namespace ColorProgramming.Items
 
         private void OnValidate()
         {
+#if UNITY_EDITOR
             if (
-                PrefabStageUtility.GetPrefabStage(gameObject) != null
+                UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) != null
                 || EditorUtility.IsPersistent(this)
                 || EditorApplication.isPlayingOrWillChangePlaymode
             )
@@ -35,6 +35,7 @@ namespace ColorProgramming.Items
             {
                 UpdateElementsSprite();
             };
+#endif
         }
         protected override void SetupConcreteNode(ConditionalNode concreteNode)
         {

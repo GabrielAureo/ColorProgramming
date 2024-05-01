@@ -1,7 +1,6 @@
 ﻿using ColorProgramming;
 using ColorProgramming.Core;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace ColorProgramming
@@ -25,8 +24,9 @@ namespace ColorProgramming
 
         private void OnValidate()
         {
+#if UNITY_EDITOR
             if (
-                PrefabStageUtility.GetPrefabStage(gameObject) != null
+                UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) != null
                 || EditorUtility.IsPersistent(this)
                 || EditorApplication.isPlayingOrWillChangePlaymode
             )
@@ -37,6 +37,7 @@ namespace ColorProgramming
             {
                 UpdateElementsMaterials();
             };
+#endif
         }
 
         private void UpdateElementsMaterials()

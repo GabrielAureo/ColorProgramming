@@ -2,7 +2,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEditor;
 using UnityEngine.UI;
 namespace ColorProgramming
@@ -96,8 +95,9 @@ namespace ColorProgramming
 
         private void OnValidate()
         {
+#if UNITY_EDITOR
             if (
-                PrefabStageUtility.GetPrefabStage(gameObject) != null
+                UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) != null
                 || EditorUtility.IsPersistent(this)
                 || EditorApplication.isPlayingOrWillChangePlaymode
             )
@@ -109,6 +109,8 @@ namespace ColorProgramming
                 AgentNode.SetElement(InitialElement);
                 UpdatePlayerElement();
             };
+
+#endif
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
