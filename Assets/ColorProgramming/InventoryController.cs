@@ -2,6 +2,7 @@
 using System.Linq;
 using ColorProgramming.Items;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace ColorProgramming
 {
@@ -10,7 +11,7 @@ namespace ColorProgramming
         private ItemController[] items;
         private ItemController[] temporaryItems;
 
-        private ItemController selectedItem;
+        public ItemController SelectedItem;
 
         [SerializeField]
         private Transform inventoryContent;
@@ -18,14 +19,27 @@ namespace ColorProgramming
         [SerializeField]
         private GameObject itemPrefab;
 
+        public ItemSelectEvent OnSelectItem = new ItemSelectEvent();
+
         public void SetSelectedItem(ItemController selectedItem)
         {
-            this.selectedItem = selectedItem;
-            foreach (var item in items)
+            if (selectedItem == SelectedItem)
             {
-                item.SetSelected(false);
+                selectedItem.SetSelected(false);
+                SelectedItem = null;
             }
-            this.selectedItem.SetSelected(true);
+            else
+            {
+
+                SelectedItem = selectedItem;
+                foreach (var item in items)
+                {
+                    item.SetSelected(false);
+                }
+                SelectedItem.SetSelected(true);
+            }
+
+            OnSelectItem.Invoke(selectedItem);
         }
 
         public void SetupInventory(ItemController[] items)
