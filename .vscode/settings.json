@@ -53,5 +53,8 @@
     },
     "dotnet.defaultSolution": "ColorProgramming.sln",
     "dotnet.codeLens.enableReferencesCodeLens": false,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "cSpell.words": [
+        "Lerp"
+    ]
 }
