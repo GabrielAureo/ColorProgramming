@@ -55,7 +55,6 @@ namespace ColorProgramming
 
         void Update()
         {
-            //transform.LookAt(Camera.main.transform, Vector3.up);
             transform.rotation = Quaternion.LookRotation(
                 transform.position - Camera.main.transform.position
             );

@@ -59,33 +59,25 @@ namespace ColorProgramming.Items
             }
         }
 
-        private void OnHold()
+        public bool Spawn(out GameObject spawnedObject)
         {
-            if (itemCount == 0)
-                return;
-
-            Movable movable;
-            if (Item.NodeGameObject.TryGetComponent<BaseNodeController>(out _))
-            {
-                var instantiatedNode = GameManager.Instance.BoardController.AddNode(
-                    Item.NodeGameObject
-                );
-                var instantiatedController = instantiatedNode.GetComponent<BaseNodeController>();
-                SetupNode(instantiatedController);
-                SetupController(instantiatedController);
-                movable = instantiatedNode.GetComponent<Movable>();
-            }
-            else
-            {
-                var movableObject = Instantiate(Item.NodeGameObject);
-                movable = movableObject.GetComponent<Movable>();
-            }
+            spawnedObject = null;
+            if (itemCount == 0 || !Item.NodeGameObject.TryGetComponent<BaseNodeController>(out _))
+                return false;
 
 
-            var movableService =
-                GameManager.Instance.TouchController.TouchServiceManager.GetService<MovableService>();
-            movableService?.Grab(movable);
+            var instantiatedNode = GameManager.Instance.BoardController.AddNode(
+                Item.NodeGameObject
+            );
+            var instantiatedController = instantiatedNode.GetComponent<BaseNodeController>();
+            SetupNode(instantiatedController);
+            SetupController(instantiatedController);
             UpdateCount(itemCount - 1);
+
+            spawnedObject = instantiatedNode.gameObject;
+            return true;
+
+
         }
 
         protected abstract void SetupNode(BaseNodeController baseController);
