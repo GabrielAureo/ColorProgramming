@@ -48,6 +48,7 @@ namespace ColorProgramming
                 Destroy(child.gameObject);
             }
 
+
             GameManager.Instance.InventoryController.SelectedItem.Spawn(out GameObject spawnedObject);
             spawnedObject.transform.SetLocalPositionAndRotation(result.Position, result.Rotation);
         }

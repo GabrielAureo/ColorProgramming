@@ -54,8 +54,6 @@ namespace ColorProgramming.Items
             {
                 if (outline)
                     outline.enabled = false;
-
-
             }
         }
 
@@ -75,8 +73,8 @@ namespace ColorProgramming.Items
             UpdateCount(itemCount - 1);
 
             spawnedObject = instantiatedNode.gameObject;
+            GameManager.Instance.InventoryController.SetSelectedItem(this);
             return true;
-
 
         }
 
