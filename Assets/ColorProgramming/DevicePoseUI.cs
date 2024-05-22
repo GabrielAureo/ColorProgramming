@@ -12,7 +12,7 @@ using Vuforia;
 public class DevicePoseUI : MonoBehaviour
 {
     public bool isTracked { get; private set; }
-    public TextMeshProUGUI textUGUI;
+    public string statusMessage { get; private set; }
 
 
     void Start()
@@ -29,7 +29,6 @@ public class DevicePoseUI : MonoBehaviour
     public void OnTargetStatusChanged(ObserverBehaviour behaviour, TargetStatus targetStatus)
     {
         isTracked = false;
-        var statusMessage = "";
 
         switch (targetStatus.StatusInfo)
         {
@@ -74,6 +73,5 @@ public class DevicePoseUI : MonoBehaviour
                 break;
         }
 
-        textUGUI.text = statusMessage;
     }
 }

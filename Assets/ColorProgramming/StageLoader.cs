@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class StageLoader : MonoBehaviour
 {
     public static int stageIndex;
+    public static bool hasPlacedArena;
 
     private static StageLoader instance;
 
@@ -20,12 +21,12 @@ public class StageLoader : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
         }
     }
 
@@ -41,8 +42,9 @@ public class StageLoader : MonoBehaviour
 
         SceneManager.LoadScene("MainScene");
         SceneManager.LoadScene($"Stage {stageIndex}", LoadSceneMode.Additive);
-        
+
         instance.StartCoroutine(WaitLoad());
+        hasPlacedArena = false;
 
     }
 

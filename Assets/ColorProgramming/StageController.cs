@@ -35,9 +35,13 @@ namespace ColorProgramming
         public void LoadStage()
         {
             var inventory = FindObjectOfType<SceneInventory>();
+            var agent = FindObjectOfType<AgentController>();
+            var target = FindObjectOfType<TargetNodeController>();
+
 
             LoadItems(inventory.Items);
-            GameManager.Instance.BoardController.SetBoard();
+            GameManager.Instance.BoardController.SetBoard(agent, target);
+            GameManager.Instance.PlacementBehavior.SetPreviewStage(agent, target);
         }
 
         private void LoadItems(ItemController[] Items)

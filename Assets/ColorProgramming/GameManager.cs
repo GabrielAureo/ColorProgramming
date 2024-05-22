@@ -18,6 +18,7 @@ namespace ColorProgramming
         public ElementsData ElementsData;
         public StageController StageController;
         public InventoryController InventoryController;
+        public PlacementBehaviour PlacementBehavior;
 
         private void OnEnable()
         {

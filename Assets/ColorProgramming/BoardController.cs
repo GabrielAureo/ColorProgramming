@@ -106,15 +106,11 @@ namespace ColorProgramming
             Toast.Show(null, "Building Loop", () => ToggleLoopBuildMode(loopNode));
         }
 
-        public void SetBoard()
+        public void SetBoard(AgentController player, TargetNodeController target)
         {
             var initialNodes = FindObjectsByType<ProgrammingNodeController>(
                 FindObjectsSortMode.None
             );
-
-            player = FindAnyObjectByType<AgentController>();
-
-            target = FindAnyObjectByType<TargetNodeController>();
 
             board = new Board(player.Node, target.Node);
 
