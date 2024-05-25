@@ -112,6 +112,9 @@ namespace ColorProgramming
                 FindObjectsSortMode.None
             );
 
+            this.player = player;
+            this.target = target;
+
             board = new Board(player.Node, target.Node);
 
             globalScope = new BoardScope();

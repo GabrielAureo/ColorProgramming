@@ -38,7 +38,7 @@ namespace ColorProgramming
             return new ContextMenu()
             {
                 data = data,
-                worldPosition = transform.position + (Vector3.up * 3f)
+                worldPosition = transform.position + (Vector3.up * .2f)
             };
         }
 
