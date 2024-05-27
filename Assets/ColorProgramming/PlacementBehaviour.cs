@@ -29,17 +29,21 @@ namespace ColorProgramming
         }
 
 
+
         public void SetPreviewStage(AgentController player, TargetNodeController target)
         {
-            foreach (Transform child in PreviewTransform.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            // foreach (Transform child in PreviewTransform.transform)
+            // {
+            //     Destroy(child.gameObject);
+            // }
+            hasPlacedPlayer = false;
+            hasPlacedTarget = false;
+
             this.player = player;
             this.target = target;
 
             player.transform.SetParent(PreviewTransform);
-            player.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            player.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
         }
 

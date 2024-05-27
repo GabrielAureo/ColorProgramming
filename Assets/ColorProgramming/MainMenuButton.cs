@@ -9,4 +9,9 @@ public class MainMenuButton : MonoBehaviour
     {
         StageLoader.LoadStage(stageIndex);
     }
+
+    public void OpenEvaluationBrowser()
+    {
+        Application.OpenURL("https://forms.gle/xEXFpYRoryqCnAJT7");
+    }
 }

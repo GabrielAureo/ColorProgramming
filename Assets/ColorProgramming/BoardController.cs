@@ -93,6 +93,7 @@ namespace ColorProgramming
 
             if (currentScopeKey == loopNode)
             {
+                isGlobalScope = true;
                 currentScopeKey = null;
                 return;
             }
@@ -102,8 +103,13 @@ namespace ColorProgramming
                 scopes.Add(loopNode, scope);
             }
             currentScopeKey = loopNode;
+            isGlobalScope = false;
 
-            Toast.Show(null, "Building Loop", () => ToggleLoopBuildMode(loopNode));
+        }
+
+        public void CloseLoopBuildMode()
+        {
+            ToggleLoopBuildMode((LoopNode)currentScopeKey);
         }
 
         public void SetBoard(AgentController player, TargetNodeController target)

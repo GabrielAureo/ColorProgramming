@@ -30,6 +30,22 @@ public class StageLoader : MonoBehaviour
         }
     }
 
+    private static void CleanUp()
+    {
+        var agents = FindObjectsOfType<AgentController>();
+        var targets = FindObjectsOfType<TargetNodeController>();
+
+        foreach (var agent in agents)
+        {
+            Destroy(agent.gameObject);
+        }
+
+        foreach (var target in targets)
+        {
+            Destroy(target.gameObject);
+        }
+    }
+
     public static void LoadStage(int stageIndex)
     {
 
@@ -50,6 +66,8 @@ public class StageLoader : MonoBehaviour
 
     public static void ResetStage()
     {
+        CleanUp();
+
         var stageIndex = FindLoadedStage();
         LoadStage(stageIndex);
     }

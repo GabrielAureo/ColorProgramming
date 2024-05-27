@@ -20,6 +20,8 @@ namespace ColorProgramming
         [SerializeField]
         private Button CloseButton;
 
+        [SerializeField]
+        private RectTransform BuildLoopUI;
 
         void Start()
         {
@@ -29,6 +31,9 @@ namespace ColorProgramming
 
         public void LoadMainMenu()
         {
+            VictoryScreen.SetActive(false);
+            FailureScreen.SetActive(false);
+
             SceneManager.LoadScene("MainMenu");
         }
 
@@ -76,7 +81,8 @@ namespace ColorProgramming
                 GameManager.Instance.BoardController.GetCurrentBoard().IsTraversable
             );
 
-            CloseButton.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
+            // CloseButton.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
+            BuildLoopUI.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
         }
 
 

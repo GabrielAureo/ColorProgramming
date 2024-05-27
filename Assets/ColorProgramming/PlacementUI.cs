@@ -18,6 +18,8 @@ public class PlacementUI : MonoBehaviour
     private bool debounceActive = false; // Flag to indicate debounce state
     private float debounceTime = 1.0f; // Time in seconds to debounce
 
+
+
     // Coroutine for debounce
     IEnumerator DebounceCoroutine()
     {
