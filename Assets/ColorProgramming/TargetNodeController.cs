@@ -2,6 +2,7 @@
 using ColorProgramming.Core;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ColorProgramming
 {
@@ -49,13 +50,8 @@ namespace ColorProgramming
 
             AccentMaterial.SetColor("_BaseColor", elementsData[TargetNode.CurrentElement].Color);
 
-            foreach (Transform child in elementTransform)
-            {
-                DestroyImmediate(child.gameObject);
-            }
-
-            var obj = Instantiate(elementsData[TargetNode.CurrentElement].Prefab, elementTransform);
-            obj.transform.localPosition = Vector3.zero;
+            var elementImage = elementTransform.GetComponent<Image>();
+            elementImage.sprite = elementsData[TargetNode.CurrentElement].Sprite;
         }
 
         public override void OnAgentTouch(AgentController agent)
