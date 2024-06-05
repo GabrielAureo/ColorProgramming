@@ -48,6 +48,7 @@ public class StageLoader : MonoBehaviour
 
     public static void LoadStage(int stageIndex)
     {
+        CleanUp();
 
         var loadedStage = FindLoadedStage();
 

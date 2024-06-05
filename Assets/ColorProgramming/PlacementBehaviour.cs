@@ -32,10 +32,14 @@ namespace ColorProgramming
 
         public void SetPreviewStage(AgentController player, TargetNodeController target)
         {
-            // foreach (Transform child in PreviewTransform.transform)
-            // {
-            //     Destroy(child.gameObject);
-            // }
+            foreach (Transform child in PreviewTransform.transform)
+            {
+                if (child == player.transform || child == target.transform)
+                {
+                    continue;
+                }
+                Destroy(child.gameObject);
+            }
             hasPlacedPlayer = false;
             hasPlacedTarget = false;
 
