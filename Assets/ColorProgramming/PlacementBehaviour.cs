@@ -57,7 +57,7 @@ namespace ColorProgramming
 
             if (itemController)
             {
-                var obj = Instantiate(itemController.Item.NodeGameObject, PreviewTransform);
+                var obj = itemController.GetPreviewItem(PreviewTransform);
                 obj.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             }
 

@@ -138,6 +138,11 @@ namespace ColorProgramming
             player.AgentNode.SetElement(player.InitialElement);
         }
 
+        public void ResetBoard()
+        {
+            board = null;
+        }
+
         public Board GetCurrentBoard()
         {
             return board;

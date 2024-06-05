@@ -78,6 +78,15 @@ namespace ColorProgramming.Items
 
         }
 
+        public GameObject GetPreviewItem(Transform parent)
+        {
+            var instantiatedPreview = Instantiate(Item.NodeGameObject, parent);
+            var instantiatedController = instantiatedPreview.GetComponent<BaseNodeController>();
+            SetupNode(instantiatedController);
+            SetupController(instantiatedController);
+            return instantiatedPreview;
+        }
+
         protected abstract void SetupNode(BaseNodeController baseController);
 
         protected abstract void SetupController(BaseNodeController baseController);

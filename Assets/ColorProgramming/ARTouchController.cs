@@ -32,11 +32,14 @@ namespace ColorProgramming
 
         private bool IsOverUI()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
-    var position = Input.GetTouch(0).position;
-#else
+            // #if UNITY_ANDROID && !UNITY_EDITOR
+            //             if (Input.touchCount <= 0) {
+            //                return false;
+            //             }
+            //              var position = Input.GetTouch(0).position;
+            // #else
             var position = Input.mousePosition;
-#endif
+            // #endif
             var eventDataCurrentPosition = new PointerEventData(EventSystem.current)
             {
                 position = position
@@ -56,19 +59,19 @@ namespace ColorProgramming
             if (IsOverUI())
                 return;
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            
-            if(Input.touchCount > 0){
-                ray = CameraRay();
-                touchData.ray = ray;
-                InputStateMachine();
+            // #if UNITY_ANDROID && !UNITY_EDITOR
 
-                if(Input.touches[0].phase == TouchPhase.Ended){
-                    Release();
-                }
-            }
-            return;
-#endif
+            //             ray = CameraRay();
+            //             touchData.ray = ray;
+            //             if(Input.touchCount > 0){
+            //                 InputStateMachine();
+
+            //                 if(Input.touches[0].phase == TouchPhase.Ended){
+            //                     Release();
+            //                 }
+            //             }
+            //             return;
+            // #endif
 
             ray = CameraRay();
             touchData.ray = ray;
@@ -103,34 +106,34 @@ namespace ColorProgramming
                 }
                 ChangeStatus(ARTouchData.Status.WAITING);
             }
-            if (touchData.currentStatus == ARTouchData.Status.HOLDING)
-            {
-                if (touchData.lastStatus == ARTouchData.Status.WAITING)
-                {
-                    try
-                    {
-                        var holdable = (IHoldable)
-                            hitInteractables.FirstOrDefault((hit) => hit is IHoldable);
-                        if (holdable != null)
-                        {
-                            touchData.selectedInteractable = holdable;
-                        }
-                    }
-                    catch (System.Exception e)
-                    {
-                        Debug.LogError(
-                            "ARTouchController: "
-                                + e.GetType().ToString()
-                                + " caught on "
-                                + touchData.selectedInteractable?.ToString()
-                                + " Hold Event"
-                                + e.StackTrace
-                        );
-                    }
-                    TouchServiceManager.TriggerHoldEvents(touchData);
-                    ChangeStatus(ARTouchData.Status.HOLDING);
-                }
-            }
+            // if (touchData.currentStatus == ARTouchData.Status.HOLDING)
+            // {
+            //     if (touchData.lastStatus == ARTouchData.Status.WAITING)
+            //     {
+            //         try
+            //         {
+            //             var holdable = (IHoldable)
+            //                 hitInteractables.FirstOrDefault((hit) => hit is IHoldable);
+            //             if (holdable != null)
+            //             {
+            //                 touchData.selectedInteractable = holdable;
+            //             }
+            //         }
+            //         catch (System.Exception e)
+            //         {
+            //             Debug.LogError(
+            //                 "ARTouchController: "
+            //                     + e.GetType().ToString()
+            //                     + " caught on "
+            //                     + touchData.selectedInteractable?.ToString()
+            //                     + " Hold Event"
+            //                     + e.StackTrace
+            //             );
+            //         }
+            //         TouchServiceManager.TriggerHoldEvents(touchData);
+            //         ChangeStatus(ARTouchData.Status.HOLDING);
+            //     }
+            // }
 
             if (touchData.currentStatus == ARTouchData.Status.WAITING)
             {
@@ -223,9 +226,9 @@ namespace ColorProgramming
         private Ray CameraRay()
         {
             Vector2 inputPosition = Input.mousePosition;
-#if UNITY_ANDROID && !UNITY_EDITOR
-            inputPosition = Input.touches[0].position;
-#endif
+            // #if UNITY_ANDROID && !UNITY_EDITOR
+            //             inputPosition = Input.touches[0].position;
+            // #endif
 
             var wrldPos = Camera.main.ScreenToWorldPoint(
                 new Vector3(inputPosition.x, inputPosition.y, 1.35f)

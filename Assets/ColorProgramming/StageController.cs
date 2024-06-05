@@ -23,6 +23,9 @@ namespace ColorProgramming
         [SerializeField]
         private RectTransform BuildLoopUI;
 
+        private bool IsMainMenu => SceneManager.GetActiveScene().name == "MainMenu";
+        private bool IsWalking => GameManager.Instance.BoardController.IsWalking;
+
         void Start()
         {
             LoadStage();
@@ -33,6 +36,9 @@ namespace ColorProgramming
         {
             VictoryScreen.SetActive(false);
             FailureScreen.SetActive(false);
+
+            PlayButton.gameObject.SetActive(false);
+            BuildLoopUI.gameObject.SetActive(false);
 
             SceneManager.LoadScene("MainMenu");
         }
@@ -77,12 +83,14 @@ namespace ColorProgramming
 
         private void Update()
         {
+
+
             PlayButton.gameObject.SetActive(
-                GameManager.Instance.BoardController.GetCurrentBoard().IsTraversable
+               !IsMainMenu && !IsWalking && GameManager.Instance.BoardController.GetCurrentBoard().IsTraversable
             );
 
             // CloseButton.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
-            BuildLoopUI.gameObject.SetActive(!GameManager.Instance.BoardController.isGlobalScope);
+            BuildLoopUI.gameObject.SetActive(!IsMainMenu && !GameManager.Instance.BoardController.isGlobalScope);
         }
 
 

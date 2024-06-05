@@ -23,6 +23,11 @@ namespace ColorProgramming
 
         public bool IsCorrectElement(Element element) => element == TargetNode.CurrentElement;
 
+        private void Awake()
+        {
+            UpdateElementsMaterials();
+        }
+
         private void OnValidate()
         {
 #if UNITY_EDITOR

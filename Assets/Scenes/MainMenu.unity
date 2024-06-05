@@ -1166,9 +1166,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ' 1
-
-'
+  m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3b72925c03ae744288c8672c1ea0d453, type: 2}
   m_sharedMaterial: {fileID: 6452717507423469805, guid: 3b72925c03ae744288c8672c1ea0d453,
@@ -1989,6 +1987,7 @@ GameObject:
   - component: {fileID: 1524520604}
   - component: {fileID: 1524520603}
   - component: {fileID: 1524520602}
+  - component: {fileID: 1524520605}
   m_Layer: 5
   m_Name: Como Jogar
   m_TagString: Untagged
@@ -2059,7 +2058,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1524520603}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1524520605}
+        m_TargetAssemblyTypeName: MainMenuButton, Assembly-CSharp
+        m_MethodName: OpenURL
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://gabrielaureo.github.io/ColorProgramming/
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1524520603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2098,6 +2109,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524520600}
   m_CullTransparentMesh: 1
+--- !u!114 &1524520605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524520600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9bd8ccab47ab49d694b36326e3d2446, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1531876773
 GameObject:
   m_ObjectHideFlags: 0
@@ -2449,14 +2472,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1640598856}
         m_TargetAssemblyTypeName: MainMenuButton, Assembly-CSharp
-        m_MethodName: OpenEvaluationBrowser
-        m_Mode: 1
+        m_MethodName: OpenURL
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: https://forms.gle/xEXFpYRoryqCnAJT7
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1640598858

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Policy;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,8 +11,9 @@ public class MainMenuButton : MonoBehaviour
         StageLoader.LoadStage(stageIndex);
     }
 
-    public void OpenEvaluationBrowser()
+    public void OpenURL(string url)
     {
-        Application.OpenURL("https://forms.gle/xEXFpYRoryqCnAJT7");
+        Application.OpenURL(url);
     }
+
 }

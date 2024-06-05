@@ -20,6 +20,8 @@ namespace ColorProgramming
 
         public bool IsLoopClosed { get; private set; }
 
+
+
         protected override Dictionary<string, UnityAction> ActionSignalMap =>
             new()
             {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI.Extensions;
 
 namespace ColorProgramming
 {
@@ -53,15 +54,25 @@ namespace ColorProgramming
             }
         }
 
-        // void Update()
-        // {
-        //     transform.rotation = Quaternion.LookRotation(
-        //         transform.position - Camera.main.transform.position
-        //     );
-        // }
+        void SetEventCamera()
+        {
+            if (contextCanvas.worldCamera == null)
+            {
+                var cameraObj = GameObject.FindWithTag("UICamera");
+                if (cameraObj)
+                {
+                    var camera = cameraObj.GetComponent<Camera>();
+                    contextCanvas.worldCamera = camera;
+                }
+
+
+            }
+        }
+
 
         private void Update()
         {
+            SetEventCamera();
             Transform transform1;
             (transform1 = transform).LookAt(2 * transform.position - Camera.main.transform.position, Vector3.up);
             var eulerAngles = transform1.eulerAngles;
