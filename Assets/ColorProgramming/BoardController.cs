@@ -178,6 +178,11 @@ namespace ColorProgramming
             var edge = CreateEdge(to, from);
             var edgeObj = Instantiate(edgePrefab);
             var edgeController = edgeObj.GetComponent<EdgeController>();
+
+            if (from.Node == edge.To)
+            {
+                (from, to) = (to, from);
+            }
             edgeController.FromNodeController = from;
             edgeController.ToNodeController = to;
             edgeController.Edge = edge;

@@ -242,12 +242,15 @@ namespace ColorProgramming.Core
                 if (LoopBodies[scope].SourceNode == null)
                 {
                     LoopBodies[scope].SourceNode = inOutLoopNode;
+                    LoopBodies[scope][edge.From].Remove(edge);
                 }
                 else if (LoopBodies[scope].TargetNode == null)
                 {
                     LoopBodies[scope].TargetNode = inOutLoopNode;
+                    (edge.From, edge.To) = (edge.To, edge.From);
+                    LoopBodies[scope][edge.To].Remove(edge);
                 }
-                LoopBodies[scope][edge.From].Remove(edge);
+
             }
 
             return edge;
