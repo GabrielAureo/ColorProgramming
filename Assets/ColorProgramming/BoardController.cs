@@ -43,28 +43,15 @@ namespace ColorProgramming
             var rootPath = ScopeToPath(globalScope, board.Path);
 
             var subGraphs = rootPath.FindAll((controller) => controller is CapsuleNodeController capsuleController && board.ScopeBodies.ContainsKey(capsuleController.ConcreteNode.ScopeKey));
-            var capsuleNodes = subGraphs.Cast<CapsuleNodeController>();
-
-            var capsulePaths = board.ScopeBodies.ToDictionary((scope) => scope.Key,
-                (scope) => board.BuildPath(scope.Value))
-                .ToDictionary((scope) => capsuleNodes.First((capsule) => capsule.ConcreteNode.ScopeKey == scope.Key).ConcreteNode, (scope) => GetPathFromScopeKey(scope.Key, capsuleNodes, scope.Value));
 
             var path = new AgentPath()
             {
                 RootPath = rootPath,
-                SubPaths = capsulePaths
             };
 
             IsWalking = true;
 
             player.WalkGraph(path);
-        }
-
-        private List<BaseNodeController> GetPathFromScopeKey(Guid key, IEnumerable<CapsuleNodeController> capsuleNodes, List<Node> value)
-        {
-            var capsuleScope = capsuleNodes.First((capsule) => capsule.ConcreteNode.ScopeKey == key);
-            return ScopeToPath(scopes[capsuleScope.ConcreteNode], value);
-
         }
 
         private List<BaseNodeController> ScopeToPath(BoardScope scope, List<Node> path)
