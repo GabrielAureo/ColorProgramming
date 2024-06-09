@@ -42,53 +42,65 @@ namespace ColorProgramming
             StartCoroutine(DoWalk(path, path.RootPath));
         }
 
+
         IEnumerator DoWalk(AgentPath path, List<BaseNodeController> rootPath)
         {
             animator.SetBool("walking", true);
             var nodes = rootPath;
 
-
             for (int i = 0; i < nodes.Count; i++)
             {
 
-                if (i == 0)
-                {
-                    transform.position = nodes[0].transform.position;
-                    yield return null;
 
-                }
                 BaseNodeController nodeController = nodes[i];
                 Vector3 startPosition = transform.position;
                 Vector3 targetPosition = nodeController.transform.position;
                 float t = 0f;
 
-                Quaternion targetRotation = Quaternion.LookRotation(transform.position - targetPosition, Vector3.up);
 
-                // Apply the rotation to your character's transform
-                transform.rotation = targetRotation;
-                // Perform interpolation from the current position to the target position
-                while (t < 1f)
+                if (path.CurvedPaths.TryGetValue(i, out var points))
                 {
-                    t += Time.deltaTime * speed;
-                    transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-                    yield return null;
+
+                    for (int j = 0; j < points.Length - 1; j++)
+                    {
+                        Vector3 curveStart = points[j];
+                        Vector3 curveEnd = points[j + 1];
+
+                        Quaternion targetRotation = Quaternion.LookRotation(transform.position - curveEnd, Vector3.up);
+                        transform.rotation = targetRotation;
+
+                        t = 0f;
+                        while (t < 1f)
+                        {
+                            t += Time.deltaTime * speed * 50f;
+                            transform.position = Vector3.Lerp(curveStart, curveEnd, Mathf.SmoothStep(0f, 1f, t));
+                            yield return null;
+                        }
+                        yield return null;
+
+                    }
+
                 }
+                else
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(transform.position - targetPosition, Vector3.up);
+                    transform.rotation = targetRotation;
+
+                    while (t < 1f)
+                    {
+                        t += Time.deltaTime * speed;
+                        transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+                        yield return null;
+                    }
+                }
+
                 nodeController.OnAgentTouch(this);
                 if (nodeController is IEvaluatable evaluatableController)
                 {
                     evaluatableController.Evaluate(this);
                 }
 
-                if (nodeController is CapsuleNodeController capsuleController)
-                {
-                    transform.localScale = Vector3.one * 0.3f;
 
-                    yield return StartCoroutine(DoWalk(path, path.SubPaths[capsuleController.ConcreteNode]));
-                    transform.position = nodes[i].transform.position;
-                    transform.localScale = Vector3.one;
-                    animator.SetBool("walking", true);
-
-                }
             }
             animator.SetBool("walking", false);
         }

@@ -9,6 +9,7 @@ namespace ColorProgramming
 	public class AgentPath
 	{
 		public List<BaseNodeController> RootPath;
+		public Dictionary<int, Vector3[]> CurvedPaths;
 
 	}
 }

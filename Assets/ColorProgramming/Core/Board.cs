@@ -39,9 +39,11 @@ namespace ColorProgramming.Core
         }
 
         public List<Node> Path;
+        public List<int> PathLoopIndexes;
 
         private void TraversableUpdate()
         {
+            PathLoopIndexes = new List<int>();
             if (HasPath(out var path))
             {
                 Path = path;
@@ -85,22 +87,25 @@ namespace ColorProgramming.Core
                     capsuleNode.InvalidMessage = "";
                 }
 
-                if (node is LoopNode loopNode)
+                if (node is LoopNode loopNode && LoopBodies.TryGetValue(loopNode, out var loopBody))
                 {
-                    if (LoopBodies.TryGetValue(loopNode, out var loopBody))
-                    {
-                        var loopPath = BuildPath(loopBody);
-                        // Add loop node to beginning and end of list
-                        loopPath.Insert(0, loopNode);
 
-                        loopPath = Enumerable
-                        .Repeat(loopPath, loopNode.TotalLoops)
-                        .SelectMany(x => x)
-                        .ToList();
+                    var loopPath = BuildPath(loopBody);
+                    // Add loop node to beginning and end of list
+                    loopPath.Insert(0, loopNode);
 
-                        loopPath.Add(node);
-                        flattenedPath.AddRange(loopPath);
-                    }
+                    loopPath = Enumerable
+                    .Repeat(loopPath, loopNode.TotalLoops)
+                    .SelectMany(x => x)
+                    .ToList();
+
+                    loopPath.Add(node);
+                    flattenedPath.AddRange(loopPath);
+
+                    var loopIndexes = Enumerable.Range(flattenedPath.Count - loopPath.Count + 1, flattenedPath.Count - 2);
+                    PathLoopIndexes.AddRange(loopIndexes);
+
+
                 }
                 else
                 {
@@ -242,15 +247,16 @@ namespace ColorProgramming.Core
                 if (LoopBodies[scope].SourceNode == null)
                 {
                     LoopBodies[scope].SourceNode = inOutLoopNode;
-                    LoopBodies[scope][edge.From].Remove(edge);
+                    if (inOutLoopNode == edge.To)
+                        (edge.To, edge.From) = (edge.From, edge.To);
                 }
                 else if (LoopBodies[scope].TargetNode == null)
                 {
                     LoopBodies[scope].TargetNode = inOutLoopNode;
-                    (edge.From, edge.To) = (edge.To, edge.From);
-                    LoopBodies[scope][edge.To].Remove(edge);
+                    if (inOutLoopNode == edge.From)
+                        (edge.To, edge.From) = (edge.From, edge.To);
                 }
-
+                LoopBodies[scope][edge.From].Remove(edge);
             }
 
             return edge;

@@ -10,7 +10,7 @@ namespace ColorProgramming
         public BaseNodeController FromNodeController;
         public BaseNodeController ToNodeController;
 
-        private LineRenderer lineRenderer;
+        public LineRenderer LineRenderer { get; private set; }
 
         [SerializeField] private Material normalMaterial;
         [SerializeField] private Material loopMaterial;
@@ -19,9 +19,9 @@ namespace ColorProgramming
 
         void Start()
         {
-            lineRenderer = GetComponent<LineRenderer>();
+            LineRenderer = GetComponent<LineRenderer>();
             var material = Edge.IsLoop ? loopMaterial : normalMaterial;
-            lineRenderer.material = material;
+            LineRenderer.material = material;
         }
 
         void Update()
@@ -46,8 +46,8 @@ namespace ColorProgramming
 
         private void RenderStraightLine()
         {
-            lineRenderer.SetPosition(0, FromNodeController.transform.position);
-            lineRenderer.SetPosition(1, ToNodeController.transform.position);
+            LineRenderer.SetPosition(0, FromNodeController.transform.position);
+            LineRenderer.SetPosition(1, ToNodeController.transform.position);
         }
 
         private void RenderBezierLine()
@@ -64,14 +64,14 @@ namespace ColorProgramming
             Vector3 P2 = P3 + orthogonalDirection;
 
             // Set the number of points in the LineRenderer
-            lineRenderer.positionCount = segmentCount;
+            LineRenderer.positionCount = segmentCount;
 
             // Calculate points on the Bezier curve
             for (int i = 0; i < segmentCount; i++)
             {
                 float t = i / (float)(segmentCount - 1);
                 Vector3 pointOnCurve = CalculateBezierPoint(t, P0, P1, P2, P3);
-                lineRenderer.SetPosition(i, pointOnCurve);
+                LineRenderer.SetPosition(i, pointOnCurve);
             }
         }
 

@@ -3,6 +3,7 @@ using ColorProgramming.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 
 namespace ColorProgramming
@@ -35,6 +36,23 @@ namespace ColorProgramming
         private InventoryController InventoryController => _inventoryController ?? FindObjectOfType<InventoryController>();
         private InventoryController _inventoryController;
 
+        private Vector3[] GetPositionsWrapper(int pathIndex)
+        {
+
+            var node = board.Path[pathIndex];
+            var edgeController = scopes.Values.SelectMany((x) => x.EdgeControllers)
+                .FirstOrDefault((edgeController) => edgeController.Edge.To == node);
+
+            var lineRenderer = edgeController.LineRenderer;
+
+
+            int positionCount = lineRenderer.positionCount;
+            Vector3[] positions = new Vector3[positionCount];
+            lineRenderer.GetPositions(positions);
+
+            return positions;
+        }
+
         public void WalkGraph()
         {
             if (!board.IsTraversable)
@@ -42,11 +60,13 @@ namespace ColorProgramming
 
             var rootPath = ScopeToPath(globalScope, board.Path);
 
-            var subGraphs = rootPath.FindAll((controller) => controller is CapsuleNodeController capsuleController && board.ScopeBodies.ContainsKey(capsuleController.ConcreteNode.ScopeKey));
+            var curvedPaths = board.PathLoopIndexes
+            .ToDictionary((index) => index, (index) => GetPositionsWrapper(index));
 
             var path = new AgentPath()
             {
                 RootPath = rootPath,
+                CurvedPaths = curvedPaths,
             };
 
             IsWalking = true;
