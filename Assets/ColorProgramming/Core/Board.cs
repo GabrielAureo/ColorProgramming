@@ -289,6 +289,7 @@ namespace ColorProgramming.Core
 
         public Edge RemoveLoop(Node from, Node to, LoopNode scope)
         {
+
             return RemoveEdge(from, to, LoopBodies[scope]);
         }
 

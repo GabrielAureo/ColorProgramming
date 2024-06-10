@@ -201,13 +201,29 @@ namespace ColorProgramming
         {
             Edge removed;
 
+            var scope = CurrentScope;
+
             if (currentScopeKey is CapsuleNode capsuleNode)
             {
                 removed = board.RemoveConnection(node.Node, other.Node, capsuleNode);
             }
             else if (currentScopeKey is LoopNode loopNode)
             {
-                removed = board.RemoveLoop(node.Node, other.Node, loopNode);
+                scope = Scopes[loopNode];
+
+                if (node.Node == loopNode || other.Node == loopNode)
+                {
+                    //we don't keep a reference to entry and exist nodes on the board, so only way to find is through the edge controllers
+                    var controller = scope.EdgeControllers.FirstOrDefault((edgeController) => (edgeController.Edge.From == node.Node && edgeController.Edge.To == other.Node) || (edgeController.Edge.From == other.Node && edgeController.Edge.To == node.Node));
+
+                    removed = controller != null ? controller.Edge : null;
+
+                }
+                else
+                {
+                    removed = board.RemoveLoop(node.Node, other.Node, loopNode);
+                }
+
             }
             else
             {
@@ -219,7 +235,11 @@ namespace ColorProgramming
                 return;
             }
 
-            var edgeObj = CurrentScope.EdgeControllers.FirstOrDefault((e) => e.Edge == removed);
+            var edgeObj = scope.EdgeControllers.FirstOrDefault((e) => e.Edge == removed);
+            if (edgeObj)
+            {
+                scope.EdgeControllers.Remove(edgeObj);
+            }
             Destroy(edgeObj.gameObject);
         }
 
