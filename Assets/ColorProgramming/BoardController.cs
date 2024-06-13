@@ -39,16 +39,24 @@ namespace ColorProgramming
         private Vector3[] GetPositionsWrapper(int pathIndex)
         {
 
-            var node = board.Path[pathIndex];
+            var to = board.Path[pathIndex];
+            var from = board.Path[pathIndex - 1];
             var edgeController = scopes.Values.SelectMany((x) => x.EdgeControllers)
-                .FirstOrDefault((edgeController) => edgeController.Edge.To == node);
+                .FirstOrDefault((edgeController) => (edgeController.Edge.To == to && edgeController.Edge.From == from) || (edgeController.Edge.To == from && edgeController.Edge.From == to));
 
             var lineRenderer = edgeController.LineRenderer;
 
 
             int positionCount = lineRenderer.positionCount;
             Vector3[] positions = new Vector3[positionCount];
+
+
             lineRenderer.GetPositions(positions);
+
+            if (from == edgeController.ToNodeController.Node)
+            {
+                positions = positions.Reverse().ToArray();
+            }
 
             return positions;
         }

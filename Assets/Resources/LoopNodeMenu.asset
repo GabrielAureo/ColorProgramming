@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: LoopNodeMenu
   m_EditorClassIdentifier: 
   actions:
-  - ActionTitle: Build Loop Mode
+  - ActionTitle: Construir Loop
     ActionIcon: {fileID: 21300000, guid: 8e029dcd646651a45bcde03d614c71b2, type: 3}
     ActionSignal: build-loop
-  - ActionTitle: Connect
+  - ActionTitle: Conectar
     ActionIcon: {fileID: 21300000, guid: e43802d1250f24444a7d5e21b28078b9, type: 3}
     ActionSignal: connect
-  - ActionTitle: Disconnect
+  - ActionTitle: Desconectar
     ActionIcon: {fileID: 21300000, guid: e43802d1250f24444a7d5e21b28078b9, type: 3}
     ActionSignal: disconnect

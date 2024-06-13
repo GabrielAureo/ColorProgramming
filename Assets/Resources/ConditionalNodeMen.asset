@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ConditionalNodeMen
   m_EditorClassIdentifier: 
   actions:
-  - ActionTitle: Connect
+  - ActionTitle: Conectar
     ActionIcon: {fileID: 21300000, guid: e43802d1250f24444a7d5e21b28078b9, type: 3}
     ActionSignal: connect
-  - ActionTitle: Disconnect
+  - ActionTitle: Desconectar
     ActionIcon: {fileID: 21300000, guid: e43802d1250f24444a7d5e21b28078b9, type: 3}
     ActionSignal: disconnect

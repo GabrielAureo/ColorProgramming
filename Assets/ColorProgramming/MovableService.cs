@@ -32,7 +32,7 @@ namespace ColorProgramming
 
         private void Grab(ARTouchData touchData)
         {
-            if(currentMovable != null)
+            if (currentMovable != null)
             {
                 return;
             }
@@ -45,7 +45,7 @@ namespace ColorProgramming
             if (takenMovable)
             {
                 currentMovable = takenMovable;
-                ConnectToHinge(takenMovable);
+                // ConnectToHinge(takenMovable);
                 returnToOrigin = provider.ReturnToOrigin;
             }
         }
@@ -53,7 +53,7 @@ namespace ColorProgramming
         public void Grab(Movable movable)
         {
             currentMovable = movable;
-            ConnectToHinge(currentMovable);
+            // ConnectToHinge(currentMovable);
         }
 
         void Release(ARTouchData touchData)
@@ -92,17 +92,17 @@ namespace ColorProgramming
         private void CleanupRelease()
         {
             hinge.connectedBody = null;
-            currentMovable.rigidBody.isKinematic = true;
+            // currentMovable.rigidBody.isKinematic = true;
             isHolding = false;
             currentMovable = null;
             returnToOrigin = null;
         }
 
-        public void ConnectToHinge(Movable movable)
-        {
-            movable.transform.parent = null;
-            movable.rigidBody.isKinematic = false;
-            hinge.connectedBody = movable.rigidBody;
-        }
+        // public void ConnectToHinge(Movable movable)
+        // {
+        //     movable.transform.parent = null;
+        //     movable.rigidBody.isKinematic = false;
+        //     hinge.connectedBody = movable.rigidBody;
+        // }
     }
 }

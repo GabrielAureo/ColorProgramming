@@ -10,11 +10,8 @@ namespace ColorProgramming
         private void Update()
         {
             if (!Camera.main) return;
-            Transform transform1;
-            (transform1 = transform).LookAt(2 * transform.position - Camera.main.transform.position, Vector3.up);
-            var eulerAngles = transform1.eulerAngles;
-            eulerAngles.x = 0;
-            transform1.localEulerAngles = eulerAngles;
+            transform.LookAt(Camera.main.transform);
+            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
         }
     }
 }

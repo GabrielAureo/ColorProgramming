@@ -105,7 +105,6 @@ namespace ColorProgramming.Core
                     var loopIndexes = Enumerable.Range(flattenedPath.Count - loopPath.Count + 1, flattenedPath.Count - 2);
                     PathLoopIndexes.AddRange(loopIndexes);
 
-
                 }
                 else
                 {
